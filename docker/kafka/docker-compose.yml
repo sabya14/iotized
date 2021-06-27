@@ -1,17 +1,15 @@
 version: '2'
 services:
   zookeeper:
-    image: wurstmeister/zookeeper
+    image: sumglobal/rpi-zookeeper
     ports:
       - "2181:2181"
   kafka:
-    build: .
+    image: sumglobal/rpi-kafka
     ports:
-      - "9092:9092"
+      - "9092"
     environment:
-      # Host of my raspberry pi
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.01.120
-      KAFKA_CREATE_TOPICS: "mqtt:1:1"
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.0.120
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
