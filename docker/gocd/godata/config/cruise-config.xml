@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="115">
+  <server artifactsdir="artifacts" agentAutoRegisterKey="123456789abcdefgh987654321" webhookSecret="57b5b4a5-e839-4735-935c-168e97b80033" commandRepositoryLocation="default" serverId="239404b7-69fe-4fc9-81e9-945654461562" tokenGenerationKey="ce1b1ecb-57a4-4ca4-8fd5-7cfdf7aa7ef8">
+    <backup emailOnSuccess="true" emailOnFailure="true" />
+  </server>
+  <pipelines group="iot">
+    <pipeline name="git-test">
+      <materials>
+        <git url="https://github.com/sabya14/cs_with_python" />
+      </materials>
+      <stage name="test">
+        <jobs>
+          <job name="test">
+            <tasks>
+              <exec command="ls">
+                <arg>-al</arg>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <agents>
+    <agent hostname="058f154d0bc8" ipaddress="172.22.0.3" uuid="b83fdc3e-4634-4518-ac5a-d889a1836139" />
+  </agents>
+</cruise>
