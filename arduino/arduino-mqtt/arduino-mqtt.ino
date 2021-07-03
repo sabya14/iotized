@@ -1,0 +1,43 @@
+#include <Arduino_JSON.h>
+#include "car.h"
+#include "utils.h"
+
+
+
+void setup() {
+  pinMode(12, OUTPUT); //Initiates Motor Channel A pin
+  pinMode(9, OUTPUT); //Initiates Brake Channel A pin
+  pinMode(13, OUTPUT); //Initiates Motor Channel A pin
+  pinMode(8, OUTPUT); //Initiates Brake Channel A pin
+  Serial.begin(115200);
+  Serial3.begin(115200);
+}
+
+
+void loop()
+{
+     if ( Serial3.available() )   {  
+       
+       String mqttData = Serial3.readString();
+       String json_data = splitString(mqttData, '\n', 1);
+       Serial.println("Data recieved..");
+       JSONVar data = JSON.parse(splitString(mqttData, '\n', 1));
+    
+      if (JSON.typeof(data) == "undefined") {
+        Serial.println("Parsing input failed!");
+        return;
+      }
+    
+      String mode = JSON.stringify(data["mode"]) ;
+      Serial.println("Selected mode --> " + mode);
+
+      if (mode == "\"car\"") {
+          processData(JSON.stringify(data["mode_data"]));
+      } else {
+          Serial.println("Invalid mode");
+      } 
+      
+
+
+   }
+}
