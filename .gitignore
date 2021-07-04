@@ -88,3 +88,4 @@ modules.xml
 token.json
 keys/
 # End of https://www.toptal.com/developers/gitignore/api/intellij+iml
+/src/backend/api/iot-gateway/iot-gateway/db.sqlite

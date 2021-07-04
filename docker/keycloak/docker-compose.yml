@@ -1,0 +1,16 @@
+version: "3"
+services:
+  keycloak:
+    image: jboss/keycloak
+    restart: always
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - 9000:8080
+    networks:
+      - dummy
+
+
+networks:
+  dummy:

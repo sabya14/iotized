@@ -70,4 +70,17 @@ void motors(int r,int l)
           analogWrite(11, r);   //Spins the motor on Channel A at full speed
       
     } 
+
+    else if(l<0 && r<0)
+        {
+          l=abs(l);
+          digitalWrite(12, LOW); //Establishes forward direction of Channel A
+          digitalWrite(9, LOW);   //Disengage the Brake for Channel A
+          analogWrite(3, l);   //Spins the motor on Channel A at full speed
+          //forward @ full speed
+          digitalWrite(13, LOW); //Establishes forward direction of Channel A
+          digitalWrite(8, LOW);   //Disengage the Brake for Channel A
+          analogWrite(11, r);   //Spins the motor on Channel A at full speed
+      
+    } 
  }
