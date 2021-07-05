@@ -8,9 +8,9 @@ void processData(String data) {
   
   //  {"speed":1}
   JSONVar config = JSON.parse(carModeData["config"]);
-  double speed = (double) config["speed"];
+  double speed = (double) carModeData["config"]["speed"];
   
-  String dir = JSON.stringify(carModeData["data"]);
+  String dir = JSON.stringify(carModeData["data"]["direction"]);
   Serial.println(dir);
 
   int finalSpeed = (int) (speed * 255);

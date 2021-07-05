@@ -9,4 +9,4 @@ class DevicesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
-        fields = ("modes", "name", "active", "desc")
+        fields = '__all__'

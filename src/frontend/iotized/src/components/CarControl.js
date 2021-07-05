@@ -9,7 +9,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackwardIcon from '@material-ui/icons/ArrowBack';
-
+import Stop from '@material-ui/icons/Stop';
 function preventDefault(event) {
     event.preventDefault();
 }
@@ -21,10 +21,11 @@ const useStyles = makeStyles({
 });
 
 const ControlButtons = ({trigger}) => <div>
-    <Button onClick={() => trigger("down")}><ArrowDownwardIcon/></Button>
-    <Button onClick={() => trigger("up")}><ArrowUpwardIcon/></Button>
+    <Button onClick={() => trigger("backward")}><ArrowDownwardIcon/></Button>
+    <Button onClick={() => trigger("forward")}><ArrowUpwardIcon/></Button>
     <Button onClick={() => trigger("left")}><ArrowBackwardIcon/></Button>
     <Button onClick={() => trigger("right")}><ArrowForwardIcon/></Button>
+    <Button onClick={() => trigger("stop")}><Stop/></Button>
 </div>;
 
 

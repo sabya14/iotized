@@ -11,6 +11,7 @@ void setup() {
   pinMode(8, OUTPUT); //Initiates Brake Channel A pin
   Serial.begin(115200);
   Serial3.begin(115200);
+  Serial3.setTimeout(100);
 }
 
 
@@ -19,13 +20,17 @@ void loop()
      if ( Serial3.available() )   {  
        
        String mqttData = Serial3.readString();
-       String json_data = splitString(mqttData, '\n', 1);
+       
+       Serial.println('\n');
        Serial.println("Data recieved..");
-       JSONVar data = JSON.parse(splitString(mqttData, '\n', 1));
-    
-      if (JSON.typeof(data) == "undefined") {
+       Serial.println(mqttData);
+       Serial.println('\n');
+       Serial.println(splitString(mqttData, '\n', 1));
+       String str_data = splitString(mqttData, '\n', 1);
+       JSONVar data = JSON.parse(str_data);
+       Serial.println(JSON.stringify(data));
+       if (JSON.typeof(data) == "undefined") {
         Serial.println("Parsing input failed!");
-        return;
       }
     
       String mode = JSON.stringify(data["mode"]) ;
@@ -37,7 +42,8 @@ void loop()
           Serial.println("Invalid mode");
       } 
       
-
-
+   
    }
+
+
 }
