@@ -6,7 +6,7 @@ app_name = 'devices'
 
 urlpatterns = [
     path('', DevicesListCreateAPIView.as_view(), name="list"),
-    path('<slug:pk>/', DevicesListRUDAPIView.as_view(), name="detail"),
+    path('name=<slug:pk>/', DevicesListRUDAPIView.as_view(), name="detail"),
     path('mode/', ModesListCreateAPIView.as_view(), name="list"),
-    path('mode/<int:pk>', ModesListRUDAPIView.as_view(), name="detail"),
+    path('mode/<int:pk>/', ModesListRUDAPIView.as_view(), name="detail"),
 ]

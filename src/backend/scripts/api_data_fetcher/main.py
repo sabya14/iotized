@@ -28,11 +28,7 @@ def get_data_from_api(url):
             }
     return devices_data
 
-#Sending to arduino-1: mode_data_dict={'mode': 'car', 'mode_data': {'data': 'forward', 'config': '{"speed":1}'}}
-#Sending to arduino-1: mode_data_dict={'mode': 'car', 'mode_data': {'data': 'forward', 'config': '{"speed":1}'}}
-#Sending to arduino-1: mode_data_dict={'mode': 'car', 'mode_data': {'data': 'forward', 'config': '{"speed": 0.3}'}}
-#Sending to arduino-1: mode_data_dict={'mode': 'car', 'mode_data': {'data': 'right', 'config': '"speed": 0.3'}}
-#Sending to arduino-1: mode_data_dict={'mode': 'car', 'mode_data': {'data': 'forward', 'config': '{"speed":1}'}}
+
 if __name__ == '__main__':
     while True:
         devices_data_map = get_data_from_api("http://192.168.0.245:8000/api/devices/")

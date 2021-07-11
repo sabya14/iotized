@@ -5,7 +5,7 @@ from devices.serializers.modes import ModesSerializer
 
 
 class DevicesSerializer(serializers.ModelSerializer):
-    modes = ModesSerializer(many=True)
+    modes = ModesSerializer(many=True, read_only=True)
 
     class Meta:
         model = Device
