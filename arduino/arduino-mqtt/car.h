@@ -3,4 +3,5 @@
 #include <Arduino.h>
 void processData(String data);
 void motors(int r,int l);
+void brake();
 #endif

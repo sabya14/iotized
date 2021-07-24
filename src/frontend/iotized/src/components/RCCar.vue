@@ -17,7 +17,7 @@
 
 
           <v-btn
-              @click="driveCar('up', 100)"
+              @click="driveCar('forward', 0.22)"
               text
               height="40px"
               width="40px"
@@ -27,7 +27,7 @@
             <v-icon>mdi-arrow-up-bold</v-icon>
           </v-btn>
           <v-btn
-              @click="driveCar('down', 100)"
+              @click="driveCar('backward', 0.22)"
               text
               height="40px"
               width="40px"
@@ -36,7 +36,7 @@
           >
             <v-icon>mdi-arrow-down-bold</v-icon>
           </v-btn>
-          <v-btn @click="driveCar('right', 100)"
+          <v-btn @click="driveCar('right', 0.22)"
                  text
                  height="40px"
                  width="40px"
@@ -46,7 +46,7 @@
             <v-icon>mdi-arrow-right-bold</v-icon>
           </v-btn>
           <v-btn
-              @click="driveCar('left', 100)"
+              @click="driveCar('left', 0.22)"
               text
               height="40px"
               width="40px"
@@ -56,7 +56,7 @@
             <v-icon>mdi-arrow-left-bold</v-icon>
           </v-btn>
           <v-btn
-              @click="driveCar('stop', 100)"
+              @click="driveCar('stop', 0.22)"
               text
               height="40px"
               width="40px"

@@ -11,7 +11,7 @@ void setup() {
   pinMode(8, OUTPUT); //Initiates Brake Channel A pin
   Serial.begin(115200);
   Serial3.begin(115200);
-  Serial3.setTimeout(100);
+  Serial3.setTimeout(50);
 }
 
 
@@ -40,6 +40,7 @@ void loop()
           processData(JSON.stringify(data["mode_data"]));
       } else {
           Serial.println("Invalid mode");
+          brake();
       } 
       
    

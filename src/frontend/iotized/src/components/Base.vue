@@ -20,10 +20,19 @@
       <v-container>
         <v-row>
           <v-col
-              v-for="(item, i) in items"
+              v-for="(item, i) in rc_car"
               :key="i"
           >
             <RCCar :item="item"/>
+          </v-col>
+
+        </v-row>
+        <v-row>
+          <v-col
+              v-for="(item, i) in acs"
+              :key="i"
+          >
+            <AC :item="item"/>
           </v-col>
         </v-row>
       </v-container>
@@ -34,19 +43,28 @@
 
 <script>
 import RCCar from "@/components/RCCar";
+import AC from "@/components/AC_Remote";
 
 export default {
-    name: 'HelloWorld',
-    components: {RCCar},
-    data: () => ({
-      items: [
-        {
-          color: '#1F7087',
-          src: 'https://cdn.vuetifyjs.com/images/cards/foster.jpg',
-          title: 'RC CAR',
-          artist: 'Drive the rc car',
-        },
-      ],
-    }),
-  }
+  name: 'HelloWorld',
+  components: {RCCar, AC},
+  data: () => ({
+    rc_car: [
+      {
+        color: '#1F7087',
+        src: 'https://cdn.vuetifyjs.com/images/cards/foster.jpg',
+        title: 'RC CAR',
+        artist: 'Drive the rc car',
+      },
+    ],
+    acs: [
+      {
+        color: '#dd1673',
+        src: 'https://cdn.vuetifyjs.com/images/cards/foster.jpg',
+        title: 'AC',
+        artist: 'Control the AC',
+      },
+    ],
+  }),
+}
 </script>

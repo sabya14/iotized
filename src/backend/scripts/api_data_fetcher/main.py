@@ -35,4 +35,4 @@ if __name__ == '__main__':
         for device_name, device_data in devices_data_map.items():
             for mode, mode_data in device_data.items():
                 send_data_to_mqtt_broker(device_name, {"mode": mode, "mode_data": mode_data})
-        time.sleep(0.15)
+        time.sleep(0.05)
