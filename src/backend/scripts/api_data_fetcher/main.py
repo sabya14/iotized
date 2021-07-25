@@ -5,6 +5,8 @@ import requests
 import serial
 
 LAST_COMMAND = '1'
+SERIAL_ENABLED = False
+DEVICES_LAST_MODIFIED = {}
 
 
 def send_data_to_mqtt_broker(device_name, mode_data_dict):
@@ -17,14 +19,13 @@ def send_data_to_mqtt_broker(device_name, mode_data_dict):
 
 
 def send_data_to_bluetooth(device_name, mode_data_dict):
-    global LAST_COMMAND
-    # pass from api
+    if not SERIAL_ENABLED:
+        print("Cant send data to bluetooth device: ",device_name)
+        return
+
     command = mode_data_dict["mode_data"]["data"]["command"]
-    if LAST_COMMAND != command:
-        print(command.encode())
-        port.write(command.encode())
-        print(f"Sending to {device_name}: mode_data_dict={mode_data_dict}")
-    LAST_COMMAND = command
+    port.write(command.encode())
+    print(f"Sending to {device_name}: mode_data_dict={mode_data_dict}")
 
 
 def get_data_from_api(url):
@@ -35,23 +36,40 @@ def get_data_from_api(url):
         device = device_data_row["name"]
         if device not in devices_data:
             devices_data[device] = {}
-
         for mode in device_data_row["modes"]:
             devices_data[device][mode["name"]] = {
                 "data": mode["data"],
-                "config": mode["config"]
+                "config": mode["config"],
+                "last_modified": mode["modified_date"]
             }
+
             if "bluetoothOnly" in mode["config"]:
                 devices_data[device][mode["name"]]["bluetoothOnly"] = True
+            add_data_only_if_new_event_event_received(device, devices_data, mode)
     return devices_data
 
 
+def add_data_only_if_new_event_event_received(device, devices_data, mode):
+    if f"{device}-{mode['name']}" not in DEVICES_LAST_MODIFIED:
+        DEVICES_LAST_MODIFIED[f"{device}-{mode['name']}"] = mode["modified_date"]
+    elif DEVICES_LAST_MODIFIED[f"{device}-{mode['name']}"] == mode["modified_date"]:
+        print(f"No new data for {device}-{mode['name']}")
+        del devices_data[device][mode["name"]]
+    else:
+        DEVICES_LAST_MODIFIED[f"{device}-{mode['name']}"] = mode["modified_date"]
+
+
 if __name__ == '__main__':
-    port = serial.Serial("/dev/rfcomm0", baudrate=9600)
+
+    try:
+        port = serial.Serial("/dev/rfcomm0", baudrate=9600)
+        SERIAL_ENABLED = False
+    except serial.SerialException as e:
+        pass
 
     while True:
-        devices_data_map = get_data_from_api("http://192.168.0.245:8000/api/devices/")
-        for device_name, device_data in devices_data_map.items():
+        all_devices_data = get_data_from_api("http://192.168.0.245:8000/api/devices/")
+        for device_name, device_data in all_devices_data.items():
             for mode, mode_data in device_data.items():
                 if "bluetoothOnly" in mode_data:
                     send_data_to_bluetooth(device_name, {"mode": mode, "mode_data": mode_data})
