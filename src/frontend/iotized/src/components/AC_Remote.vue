@@ -17,17 +17,7 @@
 
 
           <v-btn
-              @click="tempControl('off', 0.22)"
-              text
-              height="40px"
-              width="40px"
-              right
-
-          >
-            <v-icon>mdi-lightbulb-off-outline</v-icon>
-          </v-btn>
-          <v-btn
-              @click="tempControl('on', )"
+              @click="tempControl('1')"
               text
               height="40px"
               width="40px"
@@ -35,6 +25,16 @@
 
           >
             <v-icon>mdi-lightbulb-on-outline</v-icon>
+          </v-btn>
+          <v-btn
+              @click="tempControl('2')"
+              text
+              height="40px"
+              width="40px"
+              right
+
+          >
+            <v-icon>mdi-lightbulb-off-outline</v-icon>
           </v-btn>
         </v-card-actions>
       </div>
