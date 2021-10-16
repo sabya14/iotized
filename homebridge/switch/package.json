@@ -1,0 +1,21 @@
+{
+  "name": "homebridge-bluetoothportswitch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.2.0"
+  },
+  "author": "neelcode",
+  "license": "ISC",
+  "dependencies": {
+    "serialport": "^9.2.4"
+  }
+}

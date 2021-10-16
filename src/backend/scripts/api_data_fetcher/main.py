@@ -68,7 +68,7 @@ if __name__ == '__main__':
         pass
 
     while True:
-        all_devices_data = get_data_from_api("http://192.168.0.245:8000/api/devices/")
+        all_devices_data = get_data_from_api("http://192.168.0.120:8000/api/devices/")
         for device_name, device_data in all_devices_data.items():
             for mode, mode_data in device_data.items():
                 if "bluetoothOnly" in mode_data:

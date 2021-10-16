@@ -27,3 +27,12 @@ Start Data Collection Service
     #Check status
     sudo systemctl status test-py.service
     ```
+    
+
+
+SOURCES ->
+
+For bluetooth - HC05 follow steps from - https://dev.to/ivanmoreno/how-to-connect-raspberry-pi-with-hc-05-bluetooth-module-arduino-programm-3h7a
+Notes -> Scan takes time, look for device with name hc-05/06
+
+
