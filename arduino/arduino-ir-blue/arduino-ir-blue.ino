@@ -23,7 +23,7 @@ void loop() {
   } else {
     Serial.println("Sending health probe");
     MyBlue.println("Alive");
-    delay(1000);
+    delay(400);
   }
 }
 
