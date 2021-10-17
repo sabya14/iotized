@@ -16,6 +16,7 @@
   "author": "neelcode",
   "license": "ISC",
   "dependencies": {
+    "@serialport/parser-readline": "^9.2.4",
     "serialport": "^9.2.4"
   }
 }

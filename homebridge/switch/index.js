@@ -1,8 +1,20 @@
-var Service, Characteristic;
-var SerialPort = require('serialport');
-var blueSwitchStatus = false;
-var portAC = new SerialPort('/dev/rfcomm0', {baudRate: 9600});
-var portFAN = new SerialPort('/dev/rfcomm1', {baudRate: 9600});
+let Service, Characteristic;
+const SerialPort = require('serialport');
+const Readline = require('@serialport/parser-readline');
+
+let blueSwitchStatus = false;
+const portAC = new SerialPort('/dev/rfcomm0', {baudRate: 9600}).setEncoding('utf8');
+const portFAN = new SerialPort('/dev/rfcomm1', {baudRate: 9600}).setEncoding('utf8');
+
+const parserAC = portAC.pipe(new Readline({ delimiter: '\n' }));
+const parserFan = portFAN.pipe(new Readline({ delimiter: '\n' }));
+
+parserAC.on('data', data =>{
+    console.log('got word from arduino ac:', data);
+});
+parserFan.on('data', data =>{
+    console.log('got word from arduino fan:', data);
+});
 
 module.exports = function (homebridge) {
     Service = homebridge.hap.Service;
@@ -20,6 +32,16 @@ function blueSwitch(log, config) {
         .getCharacteristic(Characteristic.On)
         .on('get', this.getOn.bind(this))
         .on('set', this.setOn.bind(this));
+
+    setInterval(() => {
+        // Try to get health of ports, if port is dead, try to reconnect
+        try {
+
+
+        } catch (err) {
+            console.log("Err " + err.message)
+        }
+    }, 500);
 }
 
 blueSwitch.prototype.getServices = function () {

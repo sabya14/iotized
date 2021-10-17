@@ -15,12 +15,16 @@ void setup() {
 }
 
 void loop() {
-  if (MyBlue.available()) {
+  if (MyBlue.available() > 0) {
+    Serial.println("Here");
     char com = MyBlue.read();
     Serial.println(com);
     commandToExecute(com);
+  } else {
+    Serial.println("Sending health probe");
+    MyBlue.println("Alive");
+    delay(1000);
   }
-
 }
 
 
@@ -34,7 +38,6 @@ void commandToExecute(char comm) {
       67, 65, 9, 24, 9, 7, 9, 24, 9, 24, 9, 8, 8, 8, 9, 24, 8, 8, 9, 24, 9, 7, 9, 24, 9, 8, 9, 23, 9, 24, 9, 24, 9, 8, 8, 8, 9, 24, 9, 7, 9, 8, 8, 25, 9, 23, 9, 8, 8, 25, 9, 23, 9, 8, 9, 7, 9, 24, 9, 8, 8, 8, 9, 7, 9, 24, 9, 24, 9, 24, 9, 24, 8, 25, 9, 7, 9, 8, 8, 8, 9, 7, 9, 8, 9, 7, 9, 24, 9, 7, 9, 24, 9, 8, 8, 8, 9, 8, 9, 24, 8, 24, 9, 24, 9, 8, 8, 8, 9, 24, 9, 7, 9, 8, 8, 8, 9, 7, 9, 8, 9, 8, 8, 8, 8, 8, 9, 8, 9, 7, 9, 8, 8, 8, 8, 8, 9, 8, 9, 7, 9, 8, 8, 8, 9, 7, 9, 8, 9, 8, 8, 8, 9, 7, 9, 7, 9, 8, 9, 8, 8, 8, 9, 7, 9, 8, 8, 8, 9, 8, 8, 8, 9, 7, 9, 8, 9, 7, 9, 8, 8, 8, 9, 7, 9, 24, 9, 8, 9, 7, 9, 7, 9, 8, 9, 8, 8, 24, 9, 24, 9, 8, 8, 24, 9, 8, 9, 7, 9, 8, 9
     };
     Serial.println("Switching off");
-  
     irsend.sendRaw(irSignalOff, sizeof(irSignalOff) / sizeof(irSignalOff[0]), NEC_KHZ);
     delay(1000);
   }
@@ -43,11 +46,10 @@ void commandToExecute(char comm) {
       66, 65, 10, 23, 9, 8, 8, 24, 9, 25, 8, 8, 8, 8, 9, 24, 9, 8, 8, 24, 9, 8, 8, 25, 8, 8, 9, 24, 9, 24, 8, 24, 9, 8, 9, 7, 9, 24, 9, 7, 9, 8, 9, 24, 9, 23, 9, 8, 9, 24, 9, 24, 9, 7, 9, 8, 9, 23, 9, 8, 9, 7, 9, 8, 9, 23, 9, 25, 8, 24, 9, 24, 9, 24, 9, 7, 9, 8, 9, 7, 9, 8, 9, 7, 9, 7, 9, 24, 9, 8, 9, 23, 9, 8, 9, 8, 9, 7, 9, 24, 8, 25, 9, 23, 10, 7, 9, 7, 9, 24, 9, 7, 9, 8, 9, 7, 9, 8, 9, 7, 9, 8, 9, 7, 9, 8, 9, 7, 9, 7, 10, 7, 8, 8, 9, 8, 9, 7, 9, 8, 8, 8, 9, 7, 9, 8, 9, 7, 9, 8, 8, 8, 9, 7, 9, 8, 9, 7, 9, 8, 8, 8, 9, 8, 9, 7, 9, 8, 8, 8, 9, 7, 9, 8, 9, 7, 9, 8, 8, 8, 8, 8, 9, 24, 9, 24, 9, 7, 9, 8, 9, 8, 8, 8, 8, 8, 9, 24, 9, 8, 8, 24, 9, 24, 9, 8, 8, 8, 9, 7, 9
     };
     Serial.println("Switching on");
-  
     irsend.sendRaw(irSignalOn, sizeof(irSignalOn) / sizeof(irSignalOn[0]), NEC_KHZ);
     delay(1000);
     irsend.sendRaw(irSignalOn, sizeof(irSignalOn) / sizeof(irSignalOn[0]), NEC_KHZ);
     delay(1000);
-   
+
   }
 }
