@@ -20,10 +20,10 @@ function blueSwitch(log, config) {
     });
     this.devPort.on('close', () => {
         this.connected = false;
-        setTimeout(this.reconnect.bind(this), 5000);
+        setTimeout(this.reconnect.bind(this), 1000);
     });
     this.devPort.on('error', () => {
-        setTimeout(this.reconnect.bind(this), 5000);
+        setTimeout(this.reconnect.bind(this), 1000);
     });
 
     this.reconnect = () => {
@@ -54,12 +54,12 @@ function blueSwitch(log, config) {
     setInterval(() => {
         // Every .5 sec set health to be false, it will again be toggled when its gets health data.
         let timeElapsed = Date.now() - this.lastCheckTime;
-        if (timeElapsed > 3000) {
+        if (timeElapsed > 1200) {
             console.log(`Device ${this.name} health ${this.healthToggle} as it last connected ${timeElapsed} ms ago`);
             this.devPort.close();
             this.lastCheckTime = Date.now();
         }
-    }, 1000);
+    }, 500);
 
 }
 
