@@ -14,7 +14,7 @@ let refreshInterval = 3000;
 export class ArduinoSwitchAccessory {
     private service: Service;
     private devPort: SerialPort;
-    private devHealth: Health = new Health(false, 0, State.Down);
+    private devHealth: Health = new Health(false, -1, State.Down, -1, false);
 
     constructor(
         private readonly platform: UniversalIOTPlatform,
@@ -29,7 +29,7 @@ export class ArduinoSwitchAccessory {
         this.service.getCharacteristic(this.platform.Characteristic.On)
             .onGet(this.handleOnGet.bind(this))
             .onSet(this.handleOnSet.bind(this));
-        
+
 
         this.initWithPastState().then(r => {
             this.platform.log.info("Device info", device)
@@ -37,30 +37,49 @@ export class ArduinoSwitchAccessory {
             this.devPort.on('open', () => {
                 this.platform.log.info(`Listening to device ${this.device.name}`);
             });
-            this.devPort.on('close', () => {
-                this.platform.log.info(`Port closed, Trying to re-connect to device ${this.device.name}`);
-                this.devHealth.connected = false;
-                this.storage.store(this.devHealth)
-                setTimeout(this.reconnect.bind(this), refreshInterval);
-            });
-            this.devPort.on('error', (e) => {
-                this.platform.log.info(`Port exception, Trying to re-connect to device ${this.device.name}`);
-                this.platform.log.error(e)
-                this.devHealth.connected = false;
-                this.storage.store(this.devHealth)
-                setTimeout(this.reconnect.bind(this), refreshInterval);
-            });
+            this.onCloseOfDevPort();
+            this.onErrorOfDevPort();
+
             const parser = this.devPort.pipe(new Readline({delimiter: '\n'}));
             let lastHealth = this.devHealth
-            parser.on('data', data => {
-                this.devHealth.connected = true;
-                this.devHealth.lastUpTime = Date.now()
-                if (lastHealth != this.devHealth) {
-                    this.storage.store(this.devHealth)
-                    lastHealth = this.devHealth
-                }
-                this.platform.log.info(`Health of ${this.device.name} - ${JSON.stringify(this.devHealth)}`);
-            });
+            this.onDataFromDevPort(parser, lastHealth);
+        });
+    }
+
+    private onDataFromDevPort(parser, lastHealth: Health) {
+        parser.on('data', data => {
+            this.devHealth.connected = true;
+            this.devHealth.lastUpTime = Date.now()
+            if (lastHealth != this.devHealth) {
+                this.storage.store(this.devHealth)
+                lastHealth = this.devHealth
+            }
+            if (this.devHealth.staleState) {
+                this.handleOnSet(this.devHealth.state).then(r => {
+                    this.platform.log.info("Handled state state")
+                })
+            }
+
+            this.platform.log.info(`Health of ${this.device.name} - ${JSON.stringify(this.devHealth)}`);
+        });
+    }
+
+    private onErrorOfDevPort() {
+        this.devPort.on('error', (e) => {
+            this.platform.log.info(`Port exception, Trying to re-connect to device ${this.device.name}`);
+            this.platform.log.error(e)
+            this.devHealth.connected = false;
+            this.storage.store(this.devHealth)
+            setTimeout(this.reconnect.bind(this), refreshInterval);
+        });
+    }
+
+    private onCloseOfDevPort() {
+        this.devPort.on('close', () => {
+            this.platform.log.info(`Port closed, Trying to re-connect to device ${this.device.name}`);
+            this.devHealth.connected = false;
+            this.storage.store(this.devHealth)
+            setTimeout(this.reconnect.bind(this), refreshInterval);
         });
     }
 
@@ -91,7 +110,11 @@ export class ArduinoSwitchAccessory {
 
     async handleOnSet(value) {
         this.platform.log.info('Value received', value);
-        this.devHealth = new Health(this.devHealth.connected, this.devHealth.lastUpTime, State.Up);
+        let stale = false
+        if (!this.devHealth.connected) {
+            stale = true
+        }
+        this.devHealth = new Health(this.devHealth.connected, this.devHealth.lastUpTime, State.Up, Date.now(), stale);
         if (!value) {
             this.devHealth.state = State.Down;
         }
