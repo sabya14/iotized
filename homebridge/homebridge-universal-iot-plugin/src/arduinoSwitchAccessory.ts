@@ -1,18 +1,26 @@
-import {Service, PlatformAccessory, CharacteristicValue} from 'homebridge';
-
+import {PlatformAccessory, Service} from 'homebridge';
+import SerialPort from 'serialport'
 import {UniversalIOTPlatform} from './platform';
 import {StorageWrapper} from "./storageWrapper";
+import {Device} from "./device";
+import {Health, State} from "./health";
 
-let defaultState = {on: false};
+const path = require('path');
+
+const Readline = require('@serialport/parser-readline');
+let refreshInterval = 3000;
+
 
 export class ArduinoSwitchAccessory {
     private service: Service;
-    private state = defaultState;
+    private devPort: SerialPort;
+    private devHealth: Health = new Health(false, 0, State.Down);
 
     constructor(
         private readonly platform: UniversalIOTPlatform,
         private readonly accessory: PlatformAccessory,
-        private readonly storage: StorageWrapper
+        private readonly storage: StorageWrapper,
+        private readonly device: Device
     ) {
 
         this.setDeviceProps();
@@ -21,7 +29,45 @@ export class ArduinoSwitchAccessory {
         this.service.getCharacteristic(this.platform.Characteristic.On)
             .onGet(this.handleOnGet.bind(this))
             .onSet(this.handleOnSet.bind(this));
+        
 
+        this.initWithPastState().then(r => {
+            this.platform.log.info("Device info", device)
+            this.devPort = new SerialPort(this.device.port, {baudRate: 9600}).setEncoding('utf8');
+            this.devPort.on('open', () => {
+                this.platform.log.info(`Listening to device ${this.device.name}`);
+            });
+            this.devPort.on('close', () => {
+                this.platform.log.info(`Port closed, Trying to re-connect to device ${this.device.name}`);
+                this.devHealth.connected = false;
+                this.storage.store(this.devHealth)
+                setTimeout(this.reconnect.bind(this), refreshInterval);
+            });
+            this.devPort.on('error', (e) => {
+                this.platform.log.info(`Port exception, Trying to re-connect to device ${this.device.name}`);
+                this.platform.log.error(e)
+                this.devHealth.connected = false;
+                this.storage.store(this.devHealth)
+                setTimeout(this.reconnect.bind(this), refreshInterval);
+            });
+            const parser = this.devPort.pipe(new Readline({delimiter: '\n'}));
+            let lastHealth = this.devHealth
+            parser.on('data', data => {
+                this.devHealth.connected = true;
+                this.devHealth.lastUpTime = Date.now()
+                if (lastHealth != this.devHealth) {
+                    this.storage.store(this.devHealth)
+                    lastHealth = this.devHealth
+                }
+                this.platform.log.info(`Health of ${this.device.name} - ${JSON.stringify(this.devHealth)}`);
+            });
+        });
+    }
+
+    private reconnect = () => {
+        if (!this.devHealth.connected) {
+            this.devPort.open();
+        }
     }
 
     private setDeviceProps() {
@@ -32,16 +78,24 @@ export class ArduinoSwitchAccessory {
             .setCharacteristic(this.platform.Characteristic.Name, "Arduino Driven Switch")
     }
 
-    async handleOnGet() {
-        this.platform.log.info('Getting value of ', this.accessory.displayName);
-        let state = await this.storage.retrieve(defaultState);
-        this.platform.log.info('Value:', state);
-        return state.on
+    async initWithPastState() {
+        this.devHealth = await this.storage.retrieve(this.devHealth);
     }
 
-    handleOnSet(value) {
-        let newState = {on: value};
-        this.platform.log.info('Setting value of switch to', value);
-        this.storage.store(newState);
+    async handleOnGet() {
+        this.platform.log.info('Getting value of ', this.accessory.displayName);
+        let health = await this.storage.retrieve(this.devHealth);
+        this.platform.log.info('Current Health:', health.state);
+        return health.state.valueOf();
+    }
+
+    async handleOnSet(value) {
+        this.platform.log.info('Value received', value);
+        this.devHealth = new Health(this.devHealth.connected, this.devHealth.lastUpTime, State.Up);
+        if (!value) {
+            this.devHealth.state = State.Down;
+        }
+        this.platform.log.info('Setting value of switch to', this.devHealth.state);
+        await this.storage.store(this.devHealth);
     }
 }

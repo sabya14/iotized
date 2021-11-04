@@ -11,6 +11,7 @@ import {
 import {PLATFORM_NAME, PLUGIN_NAME} from './settings';
 import {ArduinoSwitchAccessory} from './arduinoSwitchAccessory';
 import {StorageWrapper} from "./storageWrapper";
+import {Device} from "./device";
 
 export class UniversalIOTPlatform implements DynamicPlatformPlugin {
     public readonly Service: typeof Service = this.api.hap.Service;
@@ -52,9 +53,11 @@ export class UniversalIOTPlatform implements DynamicPlatformPlugin {
      * Accessories must only be registered once, previously created accessories
      * must not be registered again to prevent "duplicate UUID" errors.
      */
+
     async discoverDevices() {
         let devicesInfo = this.config["devices_info"];
-        for (const device of devicesInfo) {
+        for (const deviceData of devicesInfo) {
+            let device = new Device(deviceData["name"], deviceData["id"], deviceData["type"], deviceData["port"]);
             const uuid = this.api.hap.uuid.generate(device.id);
             this.log.info("Device, Device UUID: ", device, uuid)
             let storage = await StorageWrapper.createAsync(this.api.user.persistPath(), this.log, device.type, device.name, device.id);
@@ -62,12 +65,12 @@ export class UniversalIOTPlatform implements DynamicPlatformPlugin {
 
             if (existingAccessory) {
                 this.log.info('Restoring existing accessory from cache:', existingAccessory.displayName);
-                new ArduinoSwitchAccessory(this, existingAccessory, storage);
+                new ArduinoSwitchAccessory(this, existingAccessory, storage, device);
             } else {
                 this.log.info('Adding new accessory:', device.name);
                 const accessory = new this.api.platformAccessory(device.name, uuid);
                 accessory.context.device = device;
-                new ArduinoSwitchAccessory(this, accessory, storage);
+                new ArduinoSwitchAccessory(this, accessory, storage, device);
                 this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
             }
         }

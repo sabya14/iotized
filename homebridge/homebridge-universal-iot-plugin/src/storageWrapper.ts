@@ -10,14 +10,13 @@ export class StorageWrapper {
         public readonly type: string,
         public readonly name: string,
         public readonly id: string,
-        public readonly storageHandler: object
     ) {
         this.log.info(`Switch ${name} is stored in file ${this.dir}`);
     }
 
     public static createAsync = async (dir, log, type, name, id) => {
         let storage = await Storage.init({dir: dir});
-        return new StorageWrapper(dir, log, type, name, id, storage);
+        return new StorageWrapper(dir, log, type, name, id);
     };
 
     public clear() {
@@ -26,7 +25,7 @@ export class StorageWrapper {
     }
 
     public store(value) {
-        this.log.info("Getting value for:", this.name)
+        this.log.info("Setting value for:", this.name, value)
         Storage.setItem(this.id, value);
     }
 
@@ -41,7 +40,7 @@ export class StorageWrapper {
                 this.log.warn("Got undefined while fetching data, returning default value")
                 data = defaultValue;
             }
-
+            this.log.info("Value fetched", data)
             return data;
         });
     }
