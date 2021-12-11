@@ -23,6 +23,8 @@ RASPBERRY SETUP NOTES
     Create rsa key.   
     Transfer key to raspberry by - ssh-copy-id <username>@?<host> -p<ssh port>
  
+ 3. 
+ 
  2. Docker setup -
   ```
     sudo apt  install docker.io

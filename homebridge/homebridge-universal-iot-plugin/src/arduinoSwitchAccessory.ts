@@ -4,11 +4,12 @@ import {UniversalIOTPlatform} from './platform';
 import {StorageWrapper} from "./storageWrapper";
 import {Device} from "./device";
 import {Health, State} from "./health";
+import {rejects} from "assert";
 
 const path = require('path');
 
 const Readline = require('@serialport/parser-readline');
-let refreshInterval = 3000;
+let refreshInterval = 1000;
 
 
 export class ArduinoSwitchAccessory {
@@ -47,6 +48,7 @@ export class ArduinoSwitchAccessory {
     }
 
     private onDataFromDevPort(parser, lastHealth: Health) {
+        if (this.devHealth === undefined) return;
         parser.on('data', data => {
             this.devHealth.connected = true;
             this.devHealth.lastUpTime = Date.now()
@@ -94,11 +96,13 @@ export class ArduinoSwitchAccessory {
             .setCharacteristic(this.platform.Characteristic.Manufacturer, 'made-by-neel')
             .setCharacteristic(this.platform.Characteristic.Model, 'ArdSwitch')
             .setCharacteristic(this.platform.Characteristic.SerialNumber, 'ArdSwitch-01')
-            .setCharacteristic(this.platform.Characteristic.Name, "Arduino Driven Switch")
+            .setCharacteristic(this.platform.Characteristic.Name, this.device.name)
     }
 
     async initWithPastState() {
-        this.devHealth = await this.storage.retrieve(this.devHealth);
+        let devHealth = await this.storage.retrieve(this.devHealth);
+        if (devHealth !== undefined)
+            this.devHealth = devHealth;
     }
 
     async handleOnGet() {
@@ -107,6 +111,7 @@ export class ArduinoSwitchAccessory {
         this.platform.log.info('Current Health:', health.state);
         return health.state.valueOf();
     }
+
 
     async handleOnSet(value) {
         this.platform.log.info('Value received', value);
@@ -118,7 +123,29 @@ export class ArduinoSwitchAccessory {
         if (!value) {
             this.devHealth.state = State.Down;
         }
-        this.platform.log.info('Setting value of switch to', this.devHealth.state);
-        await this.storage.store(this.devHealth);
+
+        this.handleWrite(value).then(() => {
+            this.platform.log.info('Setting value of switch to', this.devHealth.state);
+            this.storage.store(this.devHealth);
+        }).catch((e) => {
+            this.platform.log.error(e);
+        });
+
+
+    }
+
+    private handleWrite(value) {
+        value = value == true ? '1' : '0';
+        return new Promise((resolve, reject) => {
+            if (!this.devHealth.connected) return reject(Error('Serial port not open'));
+            this.devPort.write(value, (error) => {
+                if (error) {
+                    console.log('Error [writeAndDrain]: ' + error);
+                    reject(error);
+                } else {
+                    resolve(null);
+                }
+            });
+        });
     }
 }
