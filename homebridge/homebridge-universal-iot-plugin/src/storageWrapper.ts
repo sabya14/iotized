@@ -2,8 +2,6 @@ import {Logger} from "homebridge";
 import {JsonDB} from 'node-json-db';
 import {Config} from 'node-json-db/dist/lib/JsonDBConfig'
 
-const Storage = require('node-persist');
-
 export class StorageWrapper {
 
     constructor(
@@ -18,8 +16,7 @@ export class StorageWrapper {
     }
 
     public static createAsync = async (dir, log, type, name, id) => {
-        let storage = await Storage.init({dir: dir});
-        var db = new JsonDB(new Config("db.json", true, false, '/'));
+        let db = new JsonDB(new Config("db.json", true, false, '/'));
         db.reload();
         return new StorageWrapper(dir, log, type, name, id, db);
     };
