@@ -62,7 +62,7 @@ export class ArduinoSwitchAccessory {
                 })
             }
 
-            this.platform.log.info(`Health of ${this.device.name} - ${JSON.stringify(this.devHealth)}`);
+            // this.platform.log.info(`Health of ${this.device.name} - ${JSON.stringify(this.devHealth)}`);
         });
     }
 

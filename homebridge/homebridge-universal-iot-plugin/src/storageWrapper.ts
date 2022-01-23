@@ -35,6 +35,7 @@ export class StorageWrapper {
         try {
             return this.db.getData("/" + this.id);
         } catch (e) {
+            this.log.error(e)
             this.log.warn("Got error while fetching data, returning default value")
             return defaultValue;
 
