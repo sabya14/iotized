@@ -38,3 +38,4 @@ Example Config ->
 }
 ```
 
+Bluetooth Setup - 

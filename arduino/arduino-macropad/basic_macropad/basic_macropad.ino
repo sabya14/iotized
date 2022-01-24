@@ -11,7 +11,7 @@ const byte ROWS = 4;
 byte rowPins[ROWS] = {R1, R2, R3, R4};
 
 int lastDebounceTime = 0;
-const int debounceDelay = 200;
+const int debounceDelay = 400;
 //Encoder
 int SW = 15;
 int DT = 14;
@@ -73,6 +73,7 @@ void loop() {
         Keyboard.releaseAll();
         lastDebounceTime = millis();
         digitalWrite(i, HIGH);
+        delay(100);
       }
 
     }
