@@ -27,7 +27,7 @@ export class StorageWrapper {
     }
 
     async store(value) {
-        this.log.info("Setting value for:", this.name, value)
+        // this.log.info("Setting value for:", this.name, value)
         this.db.push("/" + this.id, value)
     }
 
@@ -35,7 +35,6 @@ export class StorageWrapper {
         try {
             return this.db.getData("/" + this.id);
         } catch (e) {
-            this.log.error(e)
             this.log.warn("Got error while fetching data, returning default value")
             return defaultValue;
 

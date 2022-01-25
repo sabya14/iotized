@@ -37,6 +37,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
+    "colorsys": "^1.0.22",
     "lowdb": "^3.0.0",
     "node-json-db": "^1.4.1"
   }

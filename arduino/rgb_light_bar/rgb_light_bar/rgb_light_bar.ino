@@ -16,17 +16,23 @@ void setup() {
   Serial.begin(9600);
   MyBlue.begin(9600);  //Baud Rate for AT-command Mode.
   delay(1000);
-
+  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
 }
-
+String rgb;
 void loop() {
-  FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
   if (MyBlue.available() > 0) {
-    String rgb = MyBlue.readStringUntil('!');
+    do {
+      rgb = MyBlue.readStringUntil('#');
+      sprintln("Got more value");
+      sprintln("Got more: " + rgb);
+    }
+    while (MyBlue.available() != 0);
     commandToExecute(rgb);
-  } else {
+
+  }
+  else {
     MyBlue.println("Alive");
-    delay(10);
+    delay(30);
   }
 }
 
@@ -48,21 +54,30 @@ String getValue(String data, char separator, int index)
   return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
+boolean isValidNumber(String str) {
+  for (byte i = 0; i < str.length(); i++)
+  {
+    if (isDigit(str.charAt(i))) return true;
+  }
+  return false;
+}
 
 void commandToExecute(String rgb) {
-  sprintln(rgb);
   String red = getValue(rgb, ',', 0);
   String green = getValue(rgb, ',', 1);
   String blue = getValue(rgb, ',', 2);
-  sprintln(red);
-  sprintln(green);
-  sprintln(blue);
+  if (isValidNumber(red) && isValidNumber(green) && isValidNumber(blue) && red.length() < 4 && green.length() < 4 && blue.length() < 4) {
+    sprint(red);
+    sprint(':');
+    sprint(green);
+    sprint(':');
+    sprint(blue);
+    sprintln(' ');
 
-  for (int i = 0; i <= 26; i++) {
-    leds[i] = CRGB ( red.toInt(), green.toInt(), blue.toInt());
-    FastLED.show();
-    delay(2);
+    for (int i = 0; i <= 26; i++) {
+      leds[i] = CRGB ( red.toInt(), green.toInt(), blue.toInt());
+      FastLED.show();
+    }
   }
-  
-  delay(2);
+
 }

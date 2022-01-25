@@ -10,6 +10,7 @@ import {
 
 import {PLATFORM_NAME, PLUGIN_NAME} from './settings';
 import {ArduinoSwitchAccessory} from './arduinoSwitchAccessory';
+import {ArduinoRGBLightAccessory} from './arduinoRGBLightAccessory';
 import {StorageWrapper} from "./storageWrapper";
 import {Device} from "./device";
 
@@ -65,12 +66,23 @@ export class UniversalIOTPlatform implements DynamicPlatformPlugin {
 
             if (existingAccessory) {
                 this.log.info('Restoring existing accessory from cache:', existingAccessory.displayName);
-                new ArduinoSwitchAccessory(this, existingAccessory, storage, device);
+                if (device.type == 'lightBulb') {
+                    new ArduinoRGBLightAccessory(this, existingAccessory, storage, device);
+                }
+                else {
+                    new ArduinoSwitchAccessory(this, existingAccessory, storage, device);
+                }
+
             } else {
                 this.log.info('Adding new accessory:', device.name);
                 const accessory = new this.api.platformAccessory(device.name, uuid);
                 accessory.context.device = device;
-                new ArduinoSwitchAccessory(this, accessory, storage, device);
+                if (device.type == 'lightBulb') {
+                    new ArduinoRGBLightAccessory(this, accessory, storage, device);
+                }
+                else {
+                    new ArduinoSwitchAccessory(this, accessory, storage, device);
+                }
                 this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
             }
         }

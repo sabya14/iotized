@@ -4,7 +4,6 @@ import {UniversalIOTPlatform} from './platform';
 import {StorageWrapper} from "./storageWrapper";
 import {Device} from "./device";
 import {Health, State} from "./health";
-import {rejects} from "assert";
 
 const path = require('path');
 
