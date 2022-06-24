@@ -22,7 +22,6 @@ export class ArduinoSwitchAccessory {
         private readonly storage: StorageWrapper,
         private readonly device: Device
     ) {
-
         this.setDeviceProps();
         this.service = this.accessory.getService(this.platform.Service.Switch) || this.accessory.addService(this.platform.Service.Switch);
 
@@ -60,8 +59,6 @@ export class ArduinoSwitchAccessory {
                     this.platform.log.info("Handled state state")
                 })
             }
-
-            // this.platform.log.info(`Health of ${this.device.name} - ${JSON.stringify(this.devHealth)}`);
         });
     }
 

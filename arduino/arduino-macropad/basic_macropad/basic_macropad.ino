@@ -11,13 +11,14 @@ const byte ROWS = 4;
 byte rowPins[ROWS] = {R1, R2, R3, R4};
 
 int lastDebounceTime = 0;
+int lastDebounceTimeEncoder = 0;
 const int debounceDelay = 400;
 //Encoder
 int SW = 15;
-int DT = 14;
-int CLK = 16;
+int DT = 10;
+int CLK = 15;
 Encoder volumeKnob(DT, CLK);
-Bounce encoderButton = Bounce(SW, 80);
+Bounce encoderButton = Bounce(SW, 60);
 int timeLimit = 500;
 long oldPosition = -999;
 int previousButtonState = HIGH;
@@ -39,15 +40,18 @@ void setup() {
 
 
 void loop() {
-  for (int i = 4; i < 8; i++) {
+  for (int i = 3; i < 8; i++) {
     buttonState = digitalRead(i);
+    if (i == 4) {
+      continue;
+    }
     if ((millis() - lastDebounceTime) > debounceDelay) {
       if (buttonState == LOW ) {
         Serial.println(i);
         switch (i) {
-            
-          case 4:
-            Keyboard.write('4');
+
+          case 3:
+            Keyboard.write('3');
             break;
           case 5:
             // Desk light off
@@ -73,7 +77,7 @@ void loop() {
         Keyboard.releaseAll();
         lastDebounceTime = millis();
         digitalWrite(i, HIGH);
-        delay(100);
+        delay(200);
       }
 
     }
@@ -105,22 +109,27 @@ void loop() {
 
   //check encoder rotation
   long newPosition = volumeKnob.read();
-  if (newPosition != oldPosition) {
-    Serial.println(newPosition);
-    Serial.println(oldPosition);
+  boolean lastUp = true;
 
-    if ((newPosition - oldPosition) > 0) {
-      //volumeup
-      Serial.println("volume up");
-      Consumer.write(MEDIA_VOLUME_UP);
+  if ((millis() - lastDebounceTimeEncoder) > debounceDelay - 38) {
+
+    if (newPosition != oldPosition) {
+
+      Serial.println(newPosition);
+      Serial.println(oldPosition);
+      if ((newPosition - oldPosition) > 0) {
+
+        Serial.println("volume up");
+        Consumer.write(MEDIA_VOLUME_UP);
+
+      }
     }
     if ((newPosition - oldPosition) < 0 ) {
-      //volumedown
       Serial.println("volume down");
       Consumer.write(MEDIA_VOLUME_DOWN);
     }
+    lastDebounceTimeEncoder = millis();
     oldPosition = newPosition;
     Keyboard.releaseAll();
-    delay(10); //a delay of 200 seems to be the sweet spot for this encoder.
   }
 }

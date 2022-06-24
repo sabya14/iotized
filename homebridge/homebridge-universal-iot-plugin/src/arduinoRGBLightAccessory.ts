@@ -5,6 +5,7 @@ import {StorageWrapper} from "./storageWrapper";
 import {Device} from "./device";
 import {Health, RGBHealth, State} from "./health";
 import {CharacteristicValue} from "hap-nodejs/dist/types";
+import {ArduinoSwitchAccessory} from "./arduinoSwitchAccessory";
 
 const path = require('path');
 
@@ -34,11 +35,6 @@ export class ArduinoRGBLightAccessory {
             .onSet(this.handleOnSet.bind(this));
 
 
-        this.service.getCharacteristic(this.platform.Characteristic.SupportedCharacteristicValueTransitionConfiguration)
-            .onGet(this.handleOnGetValueTransition.bind(this))
-            .onSet(this.handleOnSetValueTransition.bind(this));
-
-
         this.service.getCharacteristic(this.platform.Characteristic.Hue)
             .onGet(this.handleHueGet.bind(this))
             .onSet(this.handleHueSet.bind(this))
@@ -55,6 +51,11 @@ export class ArduinoRGBLightAccessory {
             .onGet(this.handleColorTempGet.bind(this))
             .onSet(this.handleColorTempSet.bind(this))
 
+        this.service.getCharacteristic(this.platform.Characteristic.SupportedCharacteristicValueTransitionConfiguration)
+            .onGet(this.handleOnGetValueTransition.bind(this))
+            .onSet(this.handleOnSetValueTransition.bind(this));
+
+
         this.initWithPastState().then(r => {
             this.platform.log.info("Device info", device)
             this.devPort = new SerialPort(this.device.port, {baudRate: 9600}).setEncoding('ascii');
@@ -65,6 +66,7 @@ export class ArduinoRGBLightAccessory {
                     this.handleOnSet(true);
                 }
             })
+
             this.onCloseOfDevPort();
             this.onErrorOfDevPort();
 
