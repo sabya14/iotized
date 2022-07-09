@@ -77,7 +77,7 @@ export class UniversalIOTPlatform implements DynamicPlatformPlugin {
                 this.log.info('Adding new accessory:', device.name);
                 const accessory = new this.api.platformAccessory(device.name, uuid);
                 accessory.context.device = device;
-                if (device.type == 'lightBulb') {
+                if (device.type === 'lightBulb') {
                     new ArduinoRGBLightAccessory(this, accessory, storage, device);
                 }
                 else {

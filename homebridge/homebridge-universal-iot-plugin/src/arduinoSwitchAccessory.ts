@@ -31,7 +31,7 @@ export class ArduinoSwitchAccessory {
 
 
         this.initWithPastState().then(r => {
-            this.platform.log.info("Device info", device)
+            this.platform.log.info('Device info', device)
             this.devPort = new SerialPort(this.device.port, {baudRate: 9600}).setEncoding('utf8');
             this.devPort.on('open', () => {
                 this.platform.log.info(`Listening to device ${this.device.name}`);
@@ -133,7 +133,8 @@ export class ArduinoSwitchAccessory {
     private handleWrite(value) {
         value = value == true ? '1' : '0';
         return new Promise((resolve, reject) => {
-            if (!this.devHealth.connected) return reject(Error('Serial port not open'));
+            if (!this.devHealth.connected)
+                return reject(Error('Serial port not open, even though its supposed to be'));
             this.devPort.write(value, (error) => {
                 if (error) {
                     console.log('Error [writeAndDrain]: ' + error);

@@ -14,7 +14,10 @@ RASPBERRY SETUP NOTES
           access-points:
             "Your WiFi Name":
               password: "YourSecret"
-
+  Then - 
+    1. sudo netplan generate
+    2. sudo netplan apply
+ 
   If connection fails,
    1. Add REGDOMAIN=IN or US to -> sudo vim /etc/default/crda 
    2. go to cd /etc/netplan and follow thread -> [https://askubuntu.com/questions/1291424/failed-to-start-netplan-wpa-wlan0-sevice-unit-netplan-wpa-wlan0-service-not-fou][Connect to 5ghz wifi]
@@ -54,7 +57,8 @@ Start Data Collection Service
 
 SOURCES ->
 
-For bluetooth - HC05 follow steps from - https://dev.to/ivanmoreno/how-to-connect-raspberry-pi-with-hc-05-bluetooth-module-arduino-programm-3h7a
+For bluetooth - HC05 follow steps from -   ExecStart=/usr/lib/bluetooth/bluetoothd -C
+ExecStartPost=/usr/bin/sdptool add SP
 Notes -> Scan takes time, look for device with name hc-05/06
 
 

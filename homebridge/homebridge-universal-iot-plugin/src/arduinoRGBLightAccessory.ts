@@ -1,19 +1,19 @@
 import {PlatformAccessory, Service} from 'homebridge';
-import SerialPort from 'serialport'
+import SerialPort from 'serialport';
 import {UniversalIOTPlatform} from './platform';
-import {StorageWrapper} from "./storageWrapper";
-import {Device} from "./device";
-import {Health, RGBHealth, State} from "./health";
-import {CharacteristicValue} from "hap-nodejs/dist/types";
-import {ArduinoSwitchAccessory} from "./arduinoSwitchAccessory";
+import {StorageWrapper} from './storageWrapper';
+import {Device} from './device';
+import {Health, RGBHealth, State} from './health';
+import {CharacteristicValue} from 'hap-nodejs/dist/types';
+import {ArduinoSwitchAccessory} from './arduinoSwitchAccessory';
 
 const path = require('path');
 
 const Readline = require('@serialport/parser-readline');
-let refreshInterval = 1000;
+const refreshInterval = 1000;
 
 
-let defaultRGBData = "100,100,100,50#";
+const defaultRGBData = '100,100,100,50#';
 
 export class ArduinoRGBLightAccessory {
     private service: Service;
@@ -24,7 +24,7 @@ export class ArduinoRGBLightAccessory {
         private readonly platform: UniversalIOTPlatform,
         private readonly accessory: PlatformAccessory,
         private readonly storage: StorageWrapper,
-        private readonly device: Device
+        private readonly device: Device,
     ) {
 
         this.setDeviceProps();
@@ -37,19 +37,19 @@ export class ArduinoRGBLightAccessory {
 
         this.service.getCharacteristic(this.platform.Characteristic.Hue)
             .onGet(this.handleHueGet.bind(this))
-            .onSet(this.handleHueSet.bind(this))
+            .onSet(this.handleHueSet.bind(this));
 
         this.service.getCharacteristic(this.platform.Characteristic.Brightness)
             .onGet(this.handleBrightnessGet.bind(this))
-            .onSet(this.handleBrightnessSet.bind(this))
+            .onSet(this.handleBrightnessSet.bind(this));
 
         this.service.getCharacteristic(this.platform.Characteristic.Saturation)
             .onGet(this.handleSaturationGet.bind(this))
-            .onSet(this.handleSaturationSet.bind(this))
+            .onSet(this.handleSaturationSet.bind(this));
 
         this.service.getCharacteristic(this.platform.Characteristic.ColorTemperature)
             .onGet(this.handleColorTempGet.bind(this))
-            .onSet(this.handleColorTempSet.bind(this))
+            .onSet(this.handleColorTempSet.bind(this));
 
         this.service.getCharacteristic(this.platform.Characteristic.SupportedCharacteristicValueTransitionConfiguration)
             .onGet(this.handleOnGetValueTransition.bind(this))
@@ -57,48 +57,80 @@ export class ArduinoRGBLightAccessory {
 
 
         this.initWithPastState().then(r => {
-            this.platform.log.info("Device info", device)
-            this.devPort = new SerialPort(this.device.port, {baudRate: 9600}).setEncoding('ascii');
+            this.platform.log.info('Device info', device);
+            this.devPort = new SerialPort(this.device.port, {baudRate: 9600});
             this.devPort.on('open', () => {
                 this.platform.log.info(`After opening port listening to device  ${this.device.name}`);
                 if (this.devHealth.state == State.Up) {
-                    this.platform.log.info("Device was on, so trying to set last known value")
+                    this.platform.log.info('Device was on, so trying to set last known value');
                     this.handleOnSet(true);
                 }
-            })
+            });
 
             this.onCloseOfDevPort();
             this.onErrorOfDevPort();
 
             const parser = this.devPort.pipe(new Readline({delimiter: '\n'}));
-            let lastHealth = this.devHealth
+            const lastHealth = this.devHealth;
             this.onDataFromDevPort(parser, lastHealth);
         });
     }
 
     private onDataFromDevPort(parser, lastHealth: Health) {
-        if (this.devHealth === undefined) return;
+        if (this.devHealth === undefined) {
+            return;
+        }
         parser.on('data', data => {
+            this.devPort.flush();
+            const rgbValueReceived = data.split(':')[1];
+            this.platform.log.info('Ack received: ', rgbValueReceived);
             this.devHealth.connected = true;
-            this.devHealth.lastUpTime = Date.now()
-            if (lastHealth != this.devHealth) {
-                this.storage.store(this.devHealth)
-                lastHealth = this.devHealth
+            this.devHealth.lastUpTime = Date.now();
+            if (lastHealth !== this.devHealth) {
+                this.storage.store(this.devHealth);
+                lastHealth = this.devHealth;
             }
             if (this.devHealth.staleState) {
                 this.handleOnSet(this.devHealth.state).then(r => {
-                    this.platform.log.info("Handled state state")
-                })
+                    this.platform.log.info('Handled state state');
+                });
             }
+            if (rgbValueReceived !== this.devHealth.data) {
+                this.platform.log.info('Ack recieved: ' + rgbValueReceived);
+                this.platform.log.info('Act data: ' + this.devHealth.data);
+                this.platform.log.info('Setting value of rgb to', this.devHealth.state, this.devHealth.data);
+              let zeroRgb = '0,0,0#';
+              if (this.devHealth.state === 0 && rgbValueReceived.trim() !== zeroRgb.trim()) {
+                    this.devPort.write(zeroRgb, (error) => {
+                        if (error) {
+                            this.platform.log.error('Error [writeAndDrain]: ' + error);
+                        } else {
+                           this.platform.log.info("State", this.devHealth.state === 0 && rgbValueReceived !== zeroRgb);
+                            this.platform.log.info('Forcefully trying to turn off');
+                            this.devHealth.data = zeroRgb;
+                        }
+                    });
+                }
+              if (this.devHealth.state === 1 && rgbValueReceived !== '#') {
+                this.devPort.write(this.devHealth.data, (error) => {
+                  if (error) {
+                    this.platform.log.error('Error [writeAndDrain]: ' + error);
+                  } else {
+                    this.platform.log.info('Forcefully Trying to turn on');
+                  }
+                });
+              }
+            }
+
         });
     }
 
     private onErrorOfDevPort() {
         this.devPort.on('error', (e) => {
             this.platform.log.info(`Port exception, Trying to re-connect to device ${this.device.name}`);
-            this.platform.log.error(e)
+            this.platform.log.error(e);
             this.devHealth.connected = false;
-            this.storage.store(this.devHealth)
+            this.storage.store(this.devHealth);
             setTimeout(this.reconnect.bind(this), refreshInterval);
         });
     }
@@ -107,7 +139,7 @@ export class ArduinoRGBLightAccessory {
         this.devPort.on('close', () => {
             this.platform.log.info(`Port closed, Trying to re-connect to device ${this.device.name}`);
             this.devHealth.connected = false;
-            this.storage.store(this.devHealth)
+            this.storage.store(this.devHealth);
             setTimeout(this.reconnect.bind(this), refreshInterval);
         });
     }
@@ -116,25 +148,26 @@ export class ArduinoRGBLightAccessory {
         if (!this.devHealth.connected) {
             this.devPort.open();
         }
-    }
+    };
 
     private setDeviceProps() {
         this.accessory.getService(this.platform.Service.AccessoryInformation)!
             .setCharacteristic(this.platform.Characteristic.Manufacturer, 'made-by-neel')
             .setCharacteristic(this.platform.Characteristic.Model, 'ArdLight')
             .setCharacteristic(this.platform.Characteristic.SerialNumber, 'ArdLight-01')
-            .setCharacteristic(this.platform.Characteristic.Name, this.device.name)
+            .setCharacteristic(this.platform.Characteristic.Name, this.device.name);
     }
 
     async initWithPastState() {
-        let devHealth = await this.storage.retrieve(this.devHealth);
-        if (devHealth !== undefined)
+        const devHealth = await this.storage.retrieve(this.devHealth);
+        if (devHealth !== undefined) {
             this.devHealth = devHealth;
+        }
     }
 
     async handleOnGet() {
         this.platform.log.info('Getting value of ', this.accessory.displayName);
-        let health = await this.storage.retrieve(this.devHealth);
+        const health = await this.storage.retrieve(this.devHealth);
         this.platform.log.info('Current Health:', health.state);
         return health.state.valueOf();
     }
@@ -143,9 +176,9 @@ export class ArduinoRGBLightAccessory {
     async handleOnSet(value) {
         this.platform.log.info('Value received for Setting (On/off)', value);
         this.platform.log.info('Value received for Setting (On/off) and currentHealth', this.devHealth);
-        let stale = false
+        let stale = false;
         if (!this.devHealth.connected) {
-            stale = true
+            stale = true;
         }
         this.devHealth = new RGBHealth(
             this.devHealth.connected,
@@ -157,54 +190,50 @@ export class ArduinoRGBLightAccessory {
             this.devHealth.hue,
             this.devHealth.saturation,
             this.devHealth.colorTemp,
-            this.devHealth.brightness
+            this.devHealth.brightness,
         );
         if (!value) {
             this.devHealth.state = State.Down;
             this.handleRgbValueSet(this.devHealth, true);
         } else {
             this.devHealth.state = State.Up;
-            let rgbAndBrightness = this.handleRgbValueSet(this.devHealth);
+            this.handleRgbValueSet(this.devHealth);
         }
 
     }
 
 
-    private handleRgbValueSet(devHealth: RGBHealth, swichtOff: boolean = false) {
+    private handleRgbValueSet(devHealth: RGBHealth, swichtOff = false) {
         if (swichtOff) {
             this.setRgbValue(
-                0, 0, 0, false
+                0, 0, 0, false,
             )
                 .then(() => {
                     this.platform.log.info('Setting value of rgb to', devHealth.state, devHealth.data);
                 }).catch((e) => {
                 this.platform.log.error(e);
-
             });
 
         } else {
             this.setRgbValue(
                 this.devHealth.hue,
                 this.devHealth.saturation,
-                this.devHealth.brightness
+                this.devHealth.brightness,
             )
                 .then(() => {
                     this.platform.log.info('Setting value of rgb to', devHealth.state, devHealth.data);
                 }).catch((e) => {
                 this.platform.log.error(e);
-
             });
-
-
         }
     }
 
     async handleHueGet() {
         this.platform.log.info('Getting value of for ', this.accessory.displayName);
         this.platform.log.info('Getting value of hue ', this.platform.Characteristic.Hue);
-        let health: RGBHealth = await this.storage.retrieve(this.devHealth);
+        const health: RGBHealth = await this.storage.retrieve(this.devHealth);
         this.platform.log.info('Current Health:', health.state);
-        let characteristic: CharacteristicValue = this.devHealth.hue;
+        const characteristic: CharacteristicValue = this.devHealth.hue;
         return characteristic;
     }
 
@@ -213,7 +242,7 @@ export class ArduinoRGBLightAccessory {
         this.setRgbValue(
             value,
             (<number>this.service.getCharacteristic(this.platform.Characteristic.Saturation).value),
-            (<number>this.service.getCharacteristic(this.platform.Characteristic.Brightness).value)
+            (<number>this.service.getCharacteristic(this.platform.Characteristic.Brightness).value),
         )
             .then(() => {
             }).catch((e) => {
@@ -222,22 +251,26 @@ export class ArduinoRGBLightAccessory {
         });
     }
 
-    async setRgbValue(hue, saturation, brightness, persist: boolean = true) {
-        this.platform.log.info('Setting rgb from hsv value ', hue, ",", saturation, ",", brightness);
-        let rgbAndBrightness = this.HSVtoRGB(hue / 360, saturation / 100, brightness / 100);
-        this.platform.log.info("RGB value", rgbAndBrightness);
+    async setRgbValue(hue, saturation, brightness, persist = true) {
+        this.platform.log.info('Setting rgb from hsv value ', hue, ',', saturation, ',', brightness);
+        const rgbAndBrightness = this.HSVtoRGB(hue / 360, saturation / 100, brightness / 100);
+        this.platform.log.info('RGB value', rgbAndBrightness);
         if (persist) {
-            this.devHealth.data = rgbAndBrightness
-            this.devHealth.hue = hue
-            this.devHealth.saturation = saturation
-            this.devHealth.brightness = brightness
+            this.devHealth.data = rgbAndBrightness;
+            this.devHealth.hue = hue;
+            this.devHealth.saturation = saturation;
+            this.devHealth.brightness = brightness;
 
         }
         return new Promise((resolve, reject) => {
-            if (!this.devHealth.connected) return reject(Error('Serial port not open'));
+            if (!this.devHealth.connected) {
+                this.platform.log.error('Dev health on error [writeAndDrain]: ', this.devHealth);
+
+                return reject(Error('Serial port not open'));
+            }
             this.devPort.write(rgbAndBrightness, (error) => {
                 if (error) {
-                    console.log('Error [writeAndDrain]: ' + error);
+                    this.platform.log.error('Error [writeAndDrain]: ' + error);
                     reject(error);
                 } else {
                     this.platform.log.info('Setting value of rgb to', this.devHealth.state, this.devHealth.data);
@@ -251,10 +284,10 @@ export class ArduinoRGBLightAccessory {
     async handleOnGetValueTransition() {
         this.platform.log.info('Getting value SupportedCharacteristicValueTransitionConfiguration for ', this.accessory.displayName);
         this.platform.log.info('Getting value of SupportedCharacteristicValueTransitionConfiguration ', this.platform.Characteristic.SupportedCharacteristicValueTransitionConfiguration);
-        let health: RGBHealth = await this.storage.retrieve(this.devHealth);
+        const health: RGBHealth = await this.storage.retrieve(this.devHealth);
         this.platform.log.info('Current Health:', health.state);
-        let characteristic: CharacteristicValue = this.devHealth.brightness;
-        return this.service.getCharacteristic(this.platform.Characteristic.SupportedCharacteristicValueTransitionConfiguration).value
+        const characteristic: CharacteristicValue = this.devHealth.brightness;
+        return this.service.getCharacteristic(this.platform.Characteristic.SupportedCharacteristicValueTransitionConfiguration).value;
     }
 
 
@@ -266,9 +299,9 @@ export class ArduinoRGBLightAccessory {
     async handleSaturationGet() {
         this.platform.log.info('Getting value saturation for ', this.accessory.displayName);
         this.platform.log.info('Getting value of saturation ', this.platform.Characteristic.Saturation);
-        let health: RGBHealth = await this.storage.retrieve(this.devHealth);
+        const health: RGBHealth = await this.storage.retrieve(this.devHealth);
         this.platform.log.info('Current Health:', health.state);
-        let characteristic: CharacteristicValue = this.devHealth.saturation;
+        const characteristic: CharacteristicValue = this.devHealth.saturation;
         return characteristic;
     }
 
@@ -276,9 +309,9 @@ export class ArduinoRGBLightAccessory {
     async handleBrightnessGet() {
         this.platform.log.info('Getting value brightness for ', this.accessory.displayName);
         this.platform.log.info('Getting value of brightness ', this.platform.Characteristic.Brightness);
-        let health: RGBHealth = await this.storage.retrieve(this.devHealth);
+        const health: RGBHealth = await this.storage.retrieve(this.devHealth);
         this.platform.log.info('Current Health:', health.state);
-        let characteristic: CharacteristicValue = this.devHealth.brightness;
+        const characteristic: CharacteristicValue = this.devHealth.brightness;
         return characteristic;
     }
 
@@ -328,12 +361,12 @@ export class ArduinoRGBLightAccessory {
     }
 
     private HSVtoRGB(h, s, v) {
-        var r, g, b;
-        var i = Math.floor(h * 6);
-        var f = h * 6 - i;
-        var p = v * (1 - s);
-        var q = v * (1 - f * s);
-        var t = v * (1 - (1 - f) * s);
+        let r, g, b;
+        const i = Math.floor(h * 6);
+        const f = h * 6 - i;
+        const p = v * (1 - s);
+        const q = v * (1 - f * s);
+        const t = v * (1 - (1 - f) * s);
 
         switch (i % 6) {
             case 0:
@@ -355,7 +388,7 @@ export class ArduinoRGBLightAccessory {
                 r = v, g = p, b = q;
                 break;
         }
-        return `${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)}#`
+        return `${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)}#`;
     }
 
 }

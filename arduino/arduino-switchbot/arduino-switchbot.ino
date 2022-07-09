@@ -1,6 +1,6 @@
 #define sprint Serial.print
 #define sprintln Serial.println
-#include <IRremote.h>
+
 #include "SoftwareSerial.h"
 #include <Servo.h>
 SoftwareSerial MyBlue(11, 12); // RX | TX
@@ -36,14 +36,14 @@ void loop() {
 void commandToExecute(char comm) {
   myservo.attach(9);  // attaches the servo on pin 9 to the servo object
   if (comm == '0') {
-    for (pos = 0; pos <= 55; pos += 1) { // goes from 0 degrees to 180 degrees
+    for (pos = 0; pos <= 75; pos += 1) { // goes from 0 degrees to 180 degrees
       // in steps of 1 degree
       myservo.write(pos);              // tell servo to go to position in variable 'pos'
       delay(5);                       // waits 15ms for the servo to reach the position
     }
   }
   if (comm == '1') {
-    for (pos = 55; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+    for (pos = 75; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
       myservo.write(pos);              // tell servo to go to position in variable 'pos'
       delay(5);                       // waits 15ms for the servo to reach the position
     }
