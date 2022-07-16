@@ -61,7 +61,7 @@ export class ArduinoRGBLightAccessory {
             this.devPort = new SerialPort(this.device.port, {baudRate: 9600});
             this.devPort.on('open', () => {
                 this.platform.log.info(`After opening port listening to device  ${this.device.name}`);
-                if (this.devHealth.state == State.Up) {
+                if (this.devHealth.state === State.Up) {
                     this.platform.log.info('Device was on, so trying to set last known value');
                     this.handleOnSet(true);
                 }
@@ -83,7 +83,6 @@ export class ArduinoRGBLightAccessory {
         parser.on('data', data => {
             this.devPort.flush();
             const rgbValueReceived = data.split(':')[1];
-            this.platform.log.info('Ack received: ', rgbValueReceived);
             this.devHealth.connected = true;
             this.devHealth.lastUpTime = Date.now();
             if (lastHealth !== this.devHealth) {
@@ -96,16 +95,12 @@ export class ArduinoRGBLightAccessory {
                 });
             }
             if (rgbValueReceived !== this.devHealth.data) {
-                this.platform.log.info('Ack recieved: ' + rgbValueReceived);
-                this.platform.log.info('Act data: ' + this.devHealth.data);
-                this.platform.log.info('Setting value of rgb to', this.devHealth.state, this.devHealth.data);
               let zeroRgb = '0,0,0#';
               if (this.devHealth.state === 0 && rgbValueReceived.trim() !== zeroRgb.trim()) {
                     this.devPort.write(zeroRgb, (error) => {
                         if (error) {
                             this.platform.log.error('Error [writeAndDrain]: ' + error);
                         } else {
-                           this.platform.log.info("State", this.devHealth.state === 0 && rgbValueReceived !== zeroRgb);
                             this.platform.log.info('Forcefully trying to turn off');
                             this.devHealth.data = zeroRgb;
                         }

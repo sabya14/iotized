@@ -66,7 +66,7 @@ export class UniversalIOTPlatform implements DynamicPlatformPlugin {
 
             if (existingAccessory) {
                 this.log.info('Restoring existing accessory from cache:', existingAccessory.displayName);
-                if (device.type == 'lightBulb') {
+                if (device.type === 'lightBulb') {
                     new ArduinoRGBLightAccessory(this, existingAccessory, storage, device);
                 }
                 else {
