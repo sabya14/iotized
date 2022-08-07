@@ -38,7 +38,6 @@ export class ArduinoSwitchAccessory {
             });
             this.onCloseOfDevPort();
             this.onErrorOfDevPort();
-
             const parser = this.devPort.pipe(new Readline({delimiter: '\n'}));
             let lastHealth = this.devHealth
             this.onDataFromDevPort(parser, lastHealth);

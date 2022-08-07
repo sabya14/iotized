@@ -15,7 +15,7 @@ const refreshInterval = 20;
 
 const defaultRGBData = '100,100,100,50#';
 
-export class ArduinoRGBLightAccessory {
+export class ArduinoRGBLightAccessoryV2 {
     private service: Service;
     private devPort: SerialPort;
     private devHealth: RGBHealth = new RGBHealth(false, -1, State.Down, -1, false, defaultRGBData, 100, 100, 100, 50);
@@ -95,7 +95,7 @@ export class ArduinoRGBLightAccessory {
                 });
             }
             if (rgbValueReceived !== this.devHealth.data) {
-                let zeroRgb = '0,0,0#';
+                let zeroRgb = '0,0,0,0#';
                 if (this.devHealth.state === 0 && rgbValueReceived.trim() !== zeroRgb.trim()) {
                     this.devPort.write(zeroRgb, (error) => {
                         if (error) {
@@ -394,7 +394,7 @@ export class ArduinoRGBLightAccessory {
                 r = v, g = p, b = q;
                 break;
         }
-        return `${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)}#`;
+        return `${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)},${Math.round(r * 255) + Math.round(g * 255) + Math.round(b * 255)}`;
     }
 
 }

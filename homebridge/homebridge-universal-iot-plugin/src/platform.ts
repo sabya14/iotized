@@ -11,6 +11,7 @@ import {
 import {PLATFORM_NAME, PLUGIN_NAME} from './settings';
 import {ArduinoSwitchAccessory} from './arduinoSwitchAccessory';
 import {ArduinoRGBLightAccessory} from './arduinoRGBLightAccessory';
+import {ArduinoRGBLightAccessoryV2} from './arduinoRGBLightAccessoryV2';
 import {StorageWrapper} from "./storageWrapper";
 import {Device} from "./device";
 
@@ -69,6 +70,9 @@ export class UniversalIOTPlatform implements DynamicPlatformPlugin {
                 if (device.type === 'lightBulb') {
                     new ArduinoRGBLightAccessory(this, existingAccessory, storage, device);
                 }
+                else if (device.type === 'rgbBulb') {
+                    new ArduinoRGBLightAccessoryV2(this, existingAccessory, storage, device);
+                }
                 else {
                     new ArduinoSwitchAccessory(this, existingAccessory, storage, device);
                 }
@@ -79,6 +83,9 @@ export class UniversalIOTPlatform implements DynamicPlatformPlugin {
                 accessory.context.device = device;
                 if (device.type === 'lightBulb') {
                     new ArduinoRGBLightAccessory(this, accessory, storage, device);
+                }
+                else if (device.type === 'rgbBulb') {
+                    new ArduinoRGBLightAccessoryV2(this, accessory, storage, device);
                 }
                 else {
                     new ArduinoSwitchAccessory(this, accessory, storage, device);
