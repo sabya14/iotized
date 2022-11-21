@@ -10,7 +10,7 @@ import {ArduinoSwitchAccessory} from './arduinoSwitchAccessory';
 const path = require('path');
 
 const Readline = require('@serialport/parser-readline');
-const refreshInterval = 20;
+const refreshInterval = 40;
 
 
 const defaultRGBData = '100,100,100,50#';
@@ -81,7 +81,6 @@ export class ArduinoRGBLightAccessoryV2 {
             return;
         }
         parser.on('data', data => {
-            this.devPort.flush();
             const rgbValueReceived = data.split(':')[1];
             this.devHealth.connected = true;
             this.devHealth.lastUpTime = Date.now();
@@ -94,35 +93,39 @@ export class ArduinoRGBLightAccessoryV2 {
                     this.platform.log.info('Handled state state');
                 });
             }
-            if (rgbValueReceived !== this.devHealth.data) {
+            if (rgbValueReceived !== this.devHealth.data && rgbValueReceived != null) {
                 let zeroRgb = '0,0,0,0#';
                 if (this.devHealth.state === 0 && rgbValueReceived.trim() !== zeroRgb.trim()) {
                     this.devPort.write(zeroRgb, (error) => {
                         if (error) {
                             this.platform.log.error('Error [writeAndDrain]: ' + error);
                         } else {
-                            this.platform.log.info('Forcefully trying to turn off ->', this.device.name);
+                            this.platform.log.info('Forcefully trying to turn off because of mismatch when state was 0 ->', this.device.name);
+                            this.platform.log.info('mismatch ->', rgbValueReceived + ',' + zeroRgb.trim());
                             this.devHealth.data = zeroRgb;
                             this.storage.store(this.devHealth);
                         }
                     });
                 }
-                if (this.devHealth.state === 1 && rgbValueReceived !== '#' && rgbValueReceived != this.devHealth.data) {
+                if (this.devHealth.state === 1 && rgbValueReceived !== '#' && (rgbValueReceived !== null) && (this.devHealth.data !== null) && (rgbValueReceived.trim() != this.devHealth.data.trim())) {
                     this.devPort.write(this.devHealth.data, (error) => {
                         if (error) {
                             this.platform.log.error('Error [writeAndDrain]: ' + error);
                         } else {
-                            this.platform.log.info('Forcefully Trying to turn set correct color value -> ', this.device.name);
+                            this.platform.log.info('Forcefully Trying to turn set correct color value when on and mismatch -> ', this.device.name);
+                            this.platform.log.info('mismatch received vs health->', rgbValueReceived + ',' + this.devHealth.data);
+                            this.platform.log.info(this.devHealth.data);
                         }
                     });
                 }
 
-                if (this.devHealth.state === 1 && rgbValueReceived === '#') {
+                if (this.devHealth.state === 1 && rgbValueReceived === '#' && rgbValueReceived != null) {
                     this.devPort.write(this.devHealth.data, (error) => {
                         if (error) {
                             this.platform.log.error('Error [writeAndDrain]: ' + error);
                         } else {
-                            this.platform.log.info('Forcefully Trying to turn on-> ', this.device.name);
+                            this.platform.log.info('mismatch ->', rgbValueReceived);
+                            this.platform.log.info('Forcefully Trying to turn on due to no value received-> ', this.device.name);
                         }
                     });
                 }
@@ -394,7 +397,7 @@ export class ArduinoRGBLightAccessoryV2 {
                 r = v, g = p, b = q;
                 break;
         }
-        return `${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)},${Math.round(r * 255) + Math.round(g * 255) + Math.round(b * 255)}`;
+        return `${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)},${Math.round(r * 255) + Math.round(g * 255) + Math.round(b * 255)}#`;
     }
 
 }

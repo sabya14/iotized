@@ -6,7 +6,7 @@ STEPS TO RUN PLUGIN ->
      n stable
 
    * Enable remote dev in idea, and sync to folder or copy entire folder.
-   * Then use -> sudo npm install -g homebridge-universal-iot-plugin//
+   * Then use -> cd 
    * npm install typescript -g
    * Then cd into the folder and npm run build
    * Then `npm run watch` to continuously build and watch.
@@ -14,9 +14,7 @@ STEPS TO RUN PLUGIN ->
 
 
 
-Device 00:20:10:08:50:70 HC-05
-Device 00:20:12:08:9E:98 HC-06
-Device 00:20:12:08:A4:D6 HC-06
+
 Example Config -> 
 ```
 {
