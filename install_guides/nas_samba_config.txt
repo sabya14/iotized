@@ -1,0 +1,39 @@
+[global]
+client min protocol = SMB2
+client max protocol = SMB3
+vfs objects = catia
+fruit streams_xattr fruit:metadata = stream
+fruit:model = RackMac
+fruit:posix_rename = yes
+fruit:veto_appledouble = no
+fruit:wipe_intentionally_left_blank_rfork = yes
+fruit:delete_empty_adfiles = yes
+security = user
+encrypt passwords = yes
+workgroup = WORKGROUP
+server role = standalone server obey pam restrictions = no map to guest = never
+
+# NAS Share Block
+
+[NAS]
+path = /mnt/raidx
+comment = RPI4 RAID0 NAS Server
+volume = NAS-Server
+valid users = neel
+read only = NO
+guest ok = NO
+public = NO
+writable = YES
+browsable = YES
+
+### -rwxr--r--
+
+create mask = 0744
+
+### -rwxr-xr-x
+
+directory mask = 0755
+
+### All hosts on the 192.168.142 subnet allowed:
+
+hosts allow = 192.168.1.

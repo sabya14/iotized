@@ -42,7 +42,7 @@ void setup() {
 void loop() {
   for (int i = 3; i < 8; i++) {
     buttonState = digitalRead(i);
-    if (i == 4) {
+    if (i == 5) {
       continue;
     }
     if ((millis() - lastDebounceTime) > debounceDelay) {
@@ -51,27 +51,17 @@ void loop() {
         switch (i) {
 
           case 3:
+            Keyboard.write('1');
+            break;
+          case 4:
+            Keyboard.write('2');
+            break;
+
+          case 6:
             Keyboard.write('3');
             break;
-          case 5:
-            // Desk light off
-            Keyboard.press(KEY_LEFT_CTRL);
-            Keyboard.press(KEY_LEFT_GUI);
-            Keyboard.press(KEY_LEFT_SHIFT);
-            Keyboard.press('O');
-            break;
-          case 6:
-            // Lock Screen
-            Keyboard.press(KEY_LEFT_CTRL);
-            Keyboard.press(KEY_LEFT_GUI);
-            Keyboard.press('Q');
-            break;
           case 7:
-            // Main bulb off
-            Keyboard.press(KEY_LEFT_CTRL);
-            Keyboard.press(KEY_LEFT_GUI);
-            Keyboard.press(KEY_LEFT_SHIFT);
-            Keyboard.press('P');
+            Keyboard.write('4');
             break;
         }
         Keyboard.releaseAll();
