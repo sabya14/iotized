@@ -89,3 +89,4 @@ token.json
 keys/
 # End of https://www.toptal.com/developers/gitignore/api/intellij+iml
 /projects/backend/api/iot-gateway/iot-gateway/db.sqlite
+/ansible/host_vars/raspberrypi.yaml

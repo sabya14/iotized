@@ -1,0 +1,71 @@
+---
+- hosts: raspberrypi
+  gather_facts: no
+  remote_user: ubuntu
+
+
+  tasks:
+
+    - name: Add a new user named {{ new_user }}
+      become_user: root
+      user:
+        name: "{{ new_user }}"
+        password: "{{ password }}"
+
+
+    - name: Add {{ new_user }} user to the sudoers
+      become: yes
+      copy:
+        dest: "/etc/sudoers.d/{{ new_user }} "
+        content: "{{ new_user }}  ALL=(ALL)  NOPASSWD: ALL"
+
+    - name: Deploy SSH Key
+      become: yes
+      authorized_key:
+        user: "{{ new_user }}"
+        key: "{{ lookup('file', '/Users/{{ new_user }}c/.ssh/id_rsa.pub') }}"
+        state: present
+
+    - name: Disable Password Authentication
+      become: yes
+      lineinfile:
+        dest=/etc/ssh/sshd_config
+        regexp='^PasswordAuthentication'
+        line="PasswordAuthentication no"
+        state=present
+        backup=yes
+      notify:
+        - restart ssh
+
+    - name: Disable Root Login
+      become: yes
+      lineinfile:
+        dest=/etc/ssh/sshd_config
+        regexp='^PermitRootLogin'
+        line="PermitRootLogin no"
+        state=present
+        backup=yes
+      notify:
+        - restart ssh
+
+    # first change the current ssh user to the new user
+    - name: user | switch current user to {{ new_user }}
+      set_fact:
+        current_user: "{{ current_user }}"
+        ansible_user: "{{ new_user }}"
+
+    # force remove the old user
+    - name: user | remove current user ({{ current_user }}) if it's not "{{ new_user }}"
+      become: yes
+      user:
+        name: "{{ current_user }}"
+        state: absent
+        remove: yes
+        force: yes
+      when: "current_user != new_user"
+
+  handlers:
+    - name: restart ssh
+      service:
+        name=ssh
+        state=restarted
