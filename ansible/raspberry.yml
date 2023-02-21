@@ -23,7 +23,7 @@
       become: yes
       authorized_key:
         user: "{{ new_user }}"
-        key: "{{ lookup('file', '/Users/{{ new_user }}c/.ssh/id_rsa.pub') }}"
+        key: "{{ lookup('file', '/Users/{{ new_user }}/.ssh/id_rsa.pub') }}"
         state: present
 
     - name: Disable Password Authentication

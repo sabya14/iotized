@@ -1,0 +1,71 @@
+---
+- hosts: raspberrypi
+  gather_facts: no
+  become: yes
+  remote_user: "{{ new_user }}"
+
+  tasks:
+    - name: Install docker packages
+      remote_user: "{{ new_user }}"
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+      tags:
+        - docker
+    - name: Add Docker s official GPG key
+      remote_user: "{{ new_user }}"
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      tags:
+        - docker
+    - name: Verify that we have the key with the fingerprint
+      remote_user: "{{ new_user }}"
+      apt_key:
+        id: 0EBFCD88
+        state: present
+      tags:
+        - docker
+    - name: Set up the stable repository
+      remote_user: "{{ new_user }}"
+      apt_repository:
+        repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu xenial stable
+        state: present
+        update_cache: yes
+      tags:
+        - docker
+    - name: Update apt packages
+      remote_user: "{{ new_user }}"
+      apt:
+        update_cache: yes
+      tags:
+        - docker
+    - name: Install docker
+      remote_user: "{{ new_user }}"
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+      #notify: Start docker on boot
+      tags:
+        - docker
+    - name: Add remote "{{ current_user }}" user to "docker" group
+      remote_user: "{{ new_user }}"
+      user:
+        name: "{{ new_user }}"
+        group: "docker"
+        append: yes
+      tags:
+        - docker
+    - name: Install docker-compose
+      remote_user: "{{ new_user }}"
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.0.1/docker-compose-linux-aarch64
+        dest: /usr/local/bin/docker-compose
+        mode: 'u+x,g+x'

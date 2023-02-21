@@ -13,8 +13,8 @@ ACCESSORIES_CHECK = "/api/accessories"
 root = logging.getLogger()
 
 UUID = {
-    "FAN": "1e326821c2dbaa09bbd3a36cf44626df974b934a65c58d48e94882d77bf7dc5d",
-    "TUBE": "ab00441d5d441723ceee48165c694ae9c1b0104871e4926db4d7d275e484a886",
+    "FAN": "9db917b003b4de769675cc0d78358d62648b4694824f0a1ee903964e5d2c9308",
+    "TUBE": "6c0e02c1ce764ae3630eb1915924bf51699d5cfea1f46d2056926272680de19d",
     "LAPTOP_STAND_LIGHT": "120b5afc26fafb99642c6d97b3ea9a220366b5592a8564ef11b5c5147865b9bb",
     "MONITOR_LIGHT": "6b6048a240f1c3869b469748a1bd1d8e95a24f3952dd243e6239130bd6695d65",
     "TV_LIGHT": "4329710622e073852327a4958c60744578123528b4142971c2a48f245057bd6f",
@@ -63,7 +63,6 @@ class HomeBridge:
         })
         if resp:
             self.token = resp.json()["access_token"]
-            print(self.token)
             root.info("Logged in, saved access token")
 
     def check_auth(self):
@@ -155,7 +154,6 @@ class KeyEventCapturer:
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    print(len(args))
     if len(args) > 3:
         # test run
         home_bridge = HomeBridge(url=args[0], username=args[1], password=args[2])
@@ -169,6 +167,7 @@ if __name__ == "__main__":
             capturer = KeyEventCapturer(home_bridge)
             capturer.start_listening()
         except Exception as e:
+            print(e)
             time.sleep(1)
             pass
 

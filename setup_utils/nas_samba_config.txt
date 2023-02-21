@@ -11,7 +11,9 @@ fruit:delete_empty_adfiles = yes
 security = user
 encrypt passwords = yes
 workgroup = WORKGROUP
-server role = standalone server obey pam restrictions = no map to guest = never
+server role = standalone
+server obey pam restrictions = no
+map to guest = never
 
 # NAS Share Block
 
@@ -34,6 +36,6 @@ create mask = 0744
 
 directory mask = 0755
 
-### All hosts on the 192.168.142 subnet allowed:
+### All hosts on the 192.168.1 subnet allowed:
 
 hosts allow = 192.168.1.
