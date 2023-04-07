@@ -1,1 +1,1 @@
-sudo ffmpeg -i rtsp://neelcode14@gmail.com:pw@192.168.1.88:554/stream2 -timeout 100 -f v4l2 -pix_fmt yuv420p /dev/video0
+  sudo ffmpeg -i rtsp://neelcode14@gmail.com:pw@192.168.1.88:554/stream2 -timeout 100 -f v4l2 -pix_fmt yuv420p /dev/video0
