@@ -4,7 +4,7 @@ resources:
 sidebar:
   width:
     mobile: 0
-    tablet: 25
+    tablet: 20
     desktop: 20
   digitalClock: true
   style: |
@@ -55,6 +55,745 @@ sidebar:
         width: 100%;
       }
 views:
+  - title: Phone
+    type: custom:grid-layout
+    background: rgb(0, 20, 25)
+    badges: []
+    layout:
+      grid-template-columns: 30% 30% 30%
+      grid-template-rows: auto
+      grid-template-areas: |
+        "h11 h12 h13"
+        "r11 r11 r11"
+        "h21 h22 h23"
+        "r21 r22 r23"
+        "h31 h31 h31"
+        "r31 r32 r33"
+        "r311 r312 r313"
+        "h41 h42 h43"
+        "r41 r42 r43"
+    cards:
+      - type: entities
+        title: Bulbs
+        view_layout:
+          grid-area: h11
+        card_mod:
+          style: |
+            ha-card {
+              border: 0px solid white;
+              background: transparent;
+
+            }
+            ha-card .card-header {
+              color: white;
+              text-align: right;
+              height: 40px !important;
+              padding: 0 0px 0 10px  !important;
+
+            }
+        entities: []
+      - type: entities
+        title: Climate
+        view_layout:
+          grid-area: h21
+        card_mod:
+          style: |
+            ha-card {
+              border: 0px solid white;
+              background: transparent;
+
+            }
+            ha-card .card-header {
+              color: white;
+              text-align: right;
+              height: 40px !important;
+              padding: 0 0px 0 10px  !important;
+
+            }
+        entities: []
+      - type: entities
+        title: Tubes | Led Strip
+        view_layout:
+          grid-area: h31
+        card_mod:
+          style: |
+            ha-card {
+              border: 0px solid white;
+              background: transparent;
+
+            }
+            ha-card .card-header {
+              color: white;
+              text-align: right;
+              height: 40px !important;
+              padding: 20px 0px 0 10px  !important;
+
+            }
+        entities: []
+      - type: entities
+        title: Scenes
+        view_layout:
+          grid-area: h41
+        card_mod:
+          style: |
+            ha-card {
+              border: 0px solid white;
+              background: transparent;
+
+            }
+            ha-card .card-header {
+              color: white;
+              text-align: right;
+              height: 40px !important;
+              padding: 0px 0px 0 10px  !important;
+
+            }
+        entities: []
+      - square: true
+        columns: 3
+        type: grid
+        view_layout:
+          grid-area: r11
+        cards:
+          - show_name: true
+            name: Uplighter
+            show_icon: true
+            type: custom:button-card
+            icon: mdi:lightbulb
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: input_boolean.dummy_uplighter
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 20px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 10px  !important;
+                  opacity: .9;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            icon: mdi:lightbulb
+            name: Plant Stand
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: input_boolean.dummy_plant_stand_bulb
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 20px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 10px  !important;
+                  opacity: .9;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            icon: mdi:lightbulb
+            name: Bed Bulb
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: input_boolean.dummy_bed_bulb
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 20px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 10px  !important;
+                  opacity: .9;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+      - type: horizontal-stack
+        view_layout:
+          grid-area: r21
+        cards:
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: switch.fan
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 20px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 10px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+      - type: horizontal-stack
+        view_layout:
+          grid-area: r31
+        cards:
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: switch.tubelight
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 20px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 10px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+      - type: horizontal-stack
+        view_layout:
+          grid-area: r311
+        cards:
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: light.work_monitor_1
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 10px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 0px 0 5px
+                - font-family: Roboto
+                - color: black
+                - font-size: 12px
+              card:
+                - width: 63px
+                - height: 65px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 10px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: light.work_monitor_2
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 10px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 0px 0 5px
+                - font-family: Roboto
+                - color: black
+                - font-size: 12px
+              card:
+                - width: 63px
+                - height: 65px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 8px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: light.tv_ambilight
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 10px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 0px 0 5px
+                - font-family: Roboto
+                - color: black
+                - font-size: 12px
+              card:
+                - width: 63px
+                - height: 65px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 8px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            icon: mdi:led-strip
+            name: Desk Light
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: input_boolean.dummy_desk_light
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 10px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 0px 0 5px
+                - font-family: Roboto
+                - color: black
+                - font-size: 12px
+              card:
+                - width: 63px
+                - height: 65px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 8px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+      - type: horizontal-stack
+        view_layout:
+          grid-area: r41
+        cards:
+          - type: custom:button-card
+            name: Chill
+            icon: mdi:track-light
+            entity: input_button.chill_mode_trigger
+            tap_action:
+              action: call-service
+              service: input_boolean.turn_on
+              service_data:
+                entity_id: input_boolean.chill_mode_trigger
+            trigger:
+              - platform: state
+                entity_id: input_boolean.chill_mode_trigger
+                to: 'on'
+                for: '00:00:05'
+            action:
+              - service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.chill_mode_trigger
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - padding: 0px 0px 0px 2px
+                - height: 40px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-icon {
+                  font-size: 10px;
+                  --card-mod-icon-color: black;
+                  transform: scale(1,1)
+                }
+                ha-card {
+                  margin: 0 0px 0 10px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+          - type: custom:button-card
+            name: Spotify
+            icon: mdi:music-box
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.relaxing_playlist
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - padding: 0px 0px 0px 2px
+                - height: 40px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-icon {
+                  font-size: 10px;
+                  --card-mod-icon-color: black;
+                  transform: scale(1,1)
+                }
+                ha-card {
+                  margin: 0 0px 0 10px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
   - title: Home
     type: custom:grid-layout
     background: rgb(0, 20, 25)
@@ -144,13 +883,17 @@ views:
 
             }
         entities: []
-      - type: horizontal-stack
+      - square: true
+        columns: 2
+        type: grid
         view_layout:
           grid-area: r11
         cards:
           - show_name: true
+            name: Uplighter
             show_icon: true
             type: custom:button-card
+            icon: mdi:lightbulb
             tap_action:
               action: toggle
             hold_action:
@@ -164,7 +907,7 @@ views:
                 styles:
                   icon:
                     - color: rgb(253,197,0)
-            entity: light.nanoleaf_a19_86mt_nanoleaf_bulb
+            entity: input_boolean.dummy_uplighter
             styles:
               grid:
                 - grid-template-areas: '"i" "n" "l"'
@@ -206,6 +949,8 @@ views:
           - show_name: true
             show_icon: true
             type: custom:button-card
+            icon: mdi:lightbulb
+            name: Plant Stand
             tap_action:
               action: toggle
             hold_action:
@@ -219,7 +964,7 @@ views:
                 styles:
                   icon:
                     - color: rgb(253,197,0)
-            entity: light.nanoleaf_a19_89qt_nanoleaf_bulb
+            entity: input_boolean.dummy_plant_stand_bulb
             styles:
               grid:
                 - grid-template-areas: '"i" "n" "l"'
@@ -258,6 +1003,63 @@ views:
                     inset -5px -5px 8px rgba(255, 255, 255, .692936),
                     inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
                 }
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            icon: mdi:lightbulb
+            name: Bed Bulb
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: input_boolean.dummy_bed_bulb
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 40px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 27px  !important;
+                  opacity: .9;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
       - type: horizontal-stack
         view_layout:
           grid-area: r12
@@ -278,7 +1080,7 @@ views:
                 styles:
                   icon:
                     - color: rgb(253,197,0)
-            entity: switch.tube
+            entity: switch.tubelight
             styles:
               grid:
                 - grid-template-areas: '"i" "n" "l"'
@@ -338,62 +1140,6 @@ views:
                 styles:
                   icon:
                     - color: rgb(253,197,0)
-            entity: light.nanoleaf_strip_ah2u_nanoleaf_light_strip
-            styles:
-              grid:
-                - grid-template-areas: '"i" "n" "l"'
-                - grid-template-rows: 1fr min-content min-content
-                - grid-template-columns: 1fr
-              img_cell:
-                - align-self: start
-                - text-align: start
-                - margin: 2px
-                - height: 40px
-                - display: block
-              name:
-                - max-width: max-content !important;
-                - justify-self: left
-                - padding: 0 10px 0 10px
-                - font-family: Roboto
-                - color: black
-                - font-size: 16px
-              card:
-                - width: 100px
-                - height: 100px
-            card_mod:
-              style: |
-                ha-card {
-                  margin: 0 0px 0 27px  !important;
-                  opacity: .9;
-                  font-size: 1.5rem;
-                  transition: .2s;
-                  border-radius: 10px;
-                  background: rgba(255, 255, 255, .85) !important;
-                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
-                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
-                }
-                ha-card:click {
-                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
-                    3px 3px 3px rgba(166, 181, 208, .929496),
-                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
-                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
-                }
-          - show_name: true
-            show_icon: true
-            type: custom:button-card
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-            state:
-              - value: 'off'
-                styles:
-                  icon:
-                    - color: grey
-              - value: 'on'
-                styles:
-                  icon:
-                    - color: rgb(253,197,0)
             entity: switch.fan
             styles:
               grid:
@@ -419,66 +1165,6 @@ views:
             card_mod:
               style: |
                 ha-card {
-                  margin: 0 0px 0 10px  !important;
-                  opacity: .9;
-                  font-size: 1.5rem;
-                  transition: .2s;
-                  border-radius: 10px;
-                  background: rgba(255, 255, 255, .85) !important;
-                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
-                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
-                }
-                ha-card:click {
-                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
-                    3px 3px 3px rgba(166, 181, 208, .929496),
-                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
-                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
-                }
-      - type: horizontal-stack
-        view_layout:
-          grid-area: r22
-        cards:
-          - show_name: true
-            show_icon: true
-            type: custom:button-card
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-            state:
-              - value: 'off'
-                styles:
-                  icon:
-                    - color: grey
-              - value: 'on'
-                styles:
-                  icon:
-                    - color: rgb(253,197,0)
-            entity: light.monitor1
-            styles:
-              grid:
-                - grid-template-areas: '"i" "n" "l"'
-                - grid-template-rows: 1fr min-content min-content
-                - grid-template-columns: 1fr
-              img_cell:
-                - align-self: start
-                - text-align: start
-                - margin: 2px
-                - height: 30px
-                - display: block
-              name:
-                - max-width: max-content !important;
-                - justify-self: left
-                - padding: 0 0px 0 5px
-                - font-family: Roboto
-                - color: black
-                - font-size: 12px
-              card:
-                - width: 63px
-                - height: 65px
-            card_mod:
-              style: |
-                ha-card {
                   margin: 0 0px 0 27px  !important;
                   opacity: .9;
                   font-size: 1.5rem;
@@ -510,7 +1196,7 @@ views:
                 styles:
                   icon:
                     - color: rgb(253,197,0)
-            entity: light.cpu
+            entity: light.tv_ambilight
             styles:
               grid:
                 - grid-template-areas: '"i" "n" "l"'
@@ -550,10 +1236,67 @@ views:
                     inset -5px -5px 8px rgba(255, 255, 255, .692936),
                     inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
                 }
-
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            icon: mdi:led-strip
+            name: Desk Light
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: input_boolean.dummy_desk_light
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 30px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 0px 0 5px
+                - font-family: Roboto
+                - color: black
+                - font-size: 12px
+              card:
+                - width: 63px
+                - height: 65px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 8px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
       - type: horizontal-stack
         view_layout:
-          grid-area: r13
+          grid-area: r22
         cards:
           - show_name: true
             show_icon: true
@@ -571,30 +1314,28 @@ views:
                 styles:
                   icon:
                     - color: rgb(253,197,0)
-            entity: switch.tube
+            entity: light.work_monitor_1
             styles:
-              color:
               grid:
                 - grid-template-areas: '"i" "n" "l"'
                 - grid-template-rows: 1fr min-content min-content
                 - grid-template-columns: 1fr
               img_cell:
                 - align-self: start
-                - color: black
                 - text-align: start
                 - margin: 2px
-                - height: 40px
+                - height: 30px
                 - display: block
               name:
                 - max-width: max-content !important;
                 - justify-self: left
-                - padding: 0 10px 0 10px
+                - padding: 0 0px 0 5px
                 - font-family: Roboto
                 - color: black
-                - font-size: 16px
+                - font-size: 12px
               card:
-                - width: 100px
-                - height: 100px
+                - width: 63px
+                - height: 65px
             card_mod:
               style: |
                 ha-card {
@@ -613,6 +1354,180 @@ views:
                     inset -5px -5px 8px rgba(255, 255, 255, .692936),
                     inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
                 }
+          - show_name: true
+            show_icon: true
+            type: custom:button-card
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            state:
+              - value: 'off'
+                styles:
+                  icon:
+                    - color: grey
+              - value: 'on'
+                styles:
+                  icon:
+                    - color: rgb(253,197,0)
+            entity: light.work_monitor_2
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - margin: 2px
+                - height: 30px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 0px 0 5px
+                - font-family: Roboto
+                - color: black
+                - font-size: 12px
+              card:
+                - width: 63px
+                - height: 65px
+            card_mod:
+              style: |
+                ha-card {
+                  margin: 0 0px 0 8px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+      - type: horizontal-stack
+        cards:
+          - type: custom:button-card
+            name: Chill
+            icon: mdi:track-light
+            entity: input_button.chill_mode_trigger
+            tap_action:
+              action: call-service
+              service: input_boolean.turn_on
+              service_data:
+                entity_id: input_boolean.chill_mode_trigger
+            trigger:
+              - platform: state
+                entity_id: input_boolean.chill_mode_trigger
+                to: 'on'
+                for: '00:00:05'
+            action:
+              - service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.chill_mode_trigger
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - padding: 0px 0px 0px 2px
+                - height: 40px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-icon {
+                  font-size: 10px;
+                  --card-mod-icon-color: black;
+                  transform: scale(1,1)
+                }
+                ha-card {
+                  margin: 0 0px 0 27px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+          - type: custom:button-card
+            name: Spotify
+            icon: mdi:music-box
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.relaxing_playlist
+            styles:
+              grid:
+                - grid-template-areas: '"i" "n" "l"'
+                - grid-template-rows: 1fr min-content min-content
+                - grid-template-columns: 1fr
+              img_cell:
+                - align-self: start
+                - text-align: start
+                - padding: 0px 0px 0px 2px
+                - height: 40px
+                - display: block
+              name:
+                - max-width: max-content !important;
+                - justify-self: left
+                - padding: 0 10px 0 10px
+                - font-family: Roboto
+                - color: black
+                - font-size: 16px
+              card:
+                - width: 100px
+                - height: 100px
+            card_mod:
+              style: |
+                ha-icon {
+                  font-size: 10px;
+                  --card-mod-icon-color: black;
+                  transform: scale(1,1)
+                }
+                ha-card {
+                  margin: 0 0px 0 27px  !important;
+                  opacity: .9;
+                  font-size: 1.5rem;
+                  transition: .2s;
+                  border-radius: 10px;
+                  background: rgba(255, 255, 255, .85) !important;
+                  box-shadow: 1px 1px 2px rgba(255, 255, 255, .35) ,
+                  1px 1px 1px rgba(165, 181, 208, .738227) !important;
+                }
+                ha-card:click {
+                    box-shadow: -1px -1px 3px rgba(255, 255, 255, .524448),
+                    3px 3px 3px rgba(166, 181, 208, .929496),
+                    inset -5px -5px 8px rgba(255, 255, 255, .692936),
+                    inset 5px 5px 8px rgba(166, 181, 208, .856261) !important;
+                }
+        view_layout:
+          grid-area: r13
 title: Control Panel
 kiosk_mode:
   user_settings:

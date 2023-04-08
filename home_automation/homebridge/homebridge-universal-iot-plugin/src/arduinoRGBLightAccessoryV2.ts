@@ -5,7 +5,6 @@ import {StorageWrapper} from './storageWrapper';
 import {Device} from './device';
 import {Health, RGBHealth, State} from './health';
 import {CharacteristicValue} from 'hap-nodejs/dist/types';
-import {ArduinoSwitchAccessory} from './arduinoSwitchAccessory';
 
 const path = require('path');
 
